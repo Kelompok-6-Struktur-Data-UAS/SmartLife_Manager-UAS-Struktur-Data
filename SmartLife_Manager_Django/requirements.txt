@@ -1,0 +1,9 @@
+Django>=5.0,<6.0  # Atau versi spesifik yang Anda instal, contoh: Django==5.2.1
+asgiref>=3.8.1
+sqlparse>=0.3.1
+tzdata
+
+# Tambahkan pustaka lain di sini nanti jika dibutuhkan, misalnya:
+# psycopg2-binary  # Jika menggunakan PostgreSQL
+# Pillow           # Untuk memproses gambar jika ada model dengan ImageField
+# django-crispy-forms # Untuk styling form yang lebih mudah (opsional)
