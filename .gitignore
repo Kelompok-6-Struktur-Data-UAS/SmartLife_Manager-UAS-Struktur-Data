@@ -172,3 +172,23 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Virtual environment
+venv/
+venv_django/  # Jika Anda menamainya venv_django
+env/          # Nama lain yang umum untuk venv
+*.env         # Jika Anda menggunakan file .env untuk variabel lingkungan
+
+# Database (jika menggunakan SQLite dan tidak ingin diunggah)
+db.sqlite3
+*.sqlite3-journal
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE/Editor specific files (opsional)
+.vscode/
+.idea/
+*.swp
