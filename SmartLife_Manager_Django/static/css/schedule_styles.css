@@ -1,0 +1,160 @@
+/* static/css/schedule_styles.css */
+
+/* Asumsikan body dan font dasar sudah diatur di CSS global yang diload (jika ada) */
+/* atau tambahkan style body di sini jika ini satu-satunya CSS kustom */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding-top: 80px; /* Sesuaikan jika navbar fixed */
+    padding-bottom: 20px;
+}
+
+.schedule-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    color: #fff; /* Teks default di container utama */
+}
+
+.schedule-page-container h2,
+.schedule-page-container h4 {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.schedule-page-container h2 i,
+.schedule-page-container h4 i {
+    margin-right: 10px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.schedule-page-container .alert-info {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #fff;
+    color: #fff;
+    border-radius: 8px;
+}
+
+.add-event-form-card {
+    background: rgba(255, 255, 255, 0.98);
+    color: #333;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.add-event-form-card h4 {
+    color: #667eea; /* Warna aksen */
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+.add-event-form-card h4 i { color: #667eea; }
+
+
+.add-event-form-card .form-control {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+}
+
+.add-event-form-card .form-control:focus {
+    background: white;
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-schedule-submit {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+.btn-schedule-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.event-list-section h4 {
+    color: #667eea;
+}
+
+.event-card {
+    background: #fff;
+    color: #333;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-left: 5px solid #667eea; /* Aksen warna */
+}
+.event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.event-card .event-date-time {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+.event-card .event-date-time .event-date {
+    font-weight: 500;
+}
+.event-card .event-date-time .event-time {
+    font-weight: bold;
+    color: #764ba2; /* Warna aksen kedua */
+    margin-left: 10px;
+}
+.event-card .event-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+.event-card .event-title i {
+    margin-right: 8px;
+    color: #667eea;
+}
+.event-card .event-location {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.event-card .event-location i {
+    margin-right: 5px;
+}
+
+.no-events-message {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #6c757d;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px dashed #d1d9e1;
+}
+.no-events-message i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    display: block;
+    color: #adb5bd;
+}
+
+/* Style untuk pesan Django (jika belum ada di CSS global Anda) */
+.messages-container .alert { /* Agar pesan tidak full width jika container utama lebih sempit */
+   margin-left: auto;
+   margin-right: auto;
+   max-width: 800px; /* Atau lebar yang Anda inginkan */
+   margin-bottom: 15px;
+}

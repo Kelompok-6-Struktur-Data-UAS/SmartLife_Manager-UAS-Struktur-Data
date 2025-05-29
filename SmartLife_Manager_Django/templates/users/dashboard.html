@@ -1,106 +1,446 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static %} <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:"Dashboard" }} - SmartLife Manager</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding-top: 20px; padding-bottom: 80px; /* Ruang untuk footer */ }
-        .dashboard-header { margin-bottom: 30px; text-align: center; }
-        .widget-card { background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px; }
-        .widget-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: #333; }
-        .quick-actions .btn { margin: 5px; font-size: 1rem; padding: 10px 15px; }
-        .footer-credits {
+        /* SELURUH BLOK <style> ANDA YANG PANJANG TETAP DI SINI (atau pindahkan ke file CSS) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            /* Menghilangkan margin-left jika sidebar fix, karena main-content sudah punya margin */
+        }
+
+        .sidebar {
             position: fixed;
-            bottom: 0;
             left: 0;
-            width: 100%;
-            background-color: #343a40; /* Warna gelap untuk footer */
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            /* Untuk mobile, bisa ditambahkan transisi untuk hide/show */
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h2 {
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding-left: 0; /* Menghilangkan padding default ul */
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active { /* .active bisa ditambahkan oleh JS atau logic template Django */
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 15px 0;
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px; /* Memastikan ikon sejajar */
+            text-align: center; /* Memusatkan ikon */
+        }
+
+        .main-content {
+            margin-left: 250px; /* Sesuai lebar sidebar */
+            padding: 20px;
+            /* Hapus min-height jika body sudah min-height 100vh */
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between; /* Pastikan ini between bukan between */
+            align-items: center;
+        }
+
+        .welcome-text {
+            color: white;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .welcome-text p {
+            opacity: 0.8;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            color: white;
+            /* margin-left: auto; /* Ini sudah benar untuk mendorong ke kanan jika header adalah flex container */
+        }
+
+        .user-info i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px; /* Memberi ruang untuk footer jika fixed */
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            display: flex; /* Untuk mengatur tombol di bawah */
+            flex-direction: column; /* Untuk mengatur tombol di bawah */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px; /* Menambah padding bawah */
+            border-bottom: 1px solid #eee; /* Garis pemisah */
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-content {
+            flex-grow: 1; /* Agar konten mengisi ruang dan tombol tetap di bawah */
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* ... (Semua style card-icon spesifik Anda tetap sama) ... */
+        .priority-tasks .card-icon { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .today-schedule .card-icon { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .quick-notes .card-icon { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
+        .social-reminders .card-icon { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+        .data-structure-info .card-icon { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .goals-progress .card-icon { background: linear-gradient(135deg, #00b894, #00a085); }
+
+
+        .task-item, .schedule-item, .note-item, .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .task-item:last-child, .schedule-item:last-child, .note-item:last-child, .contact-item:last-child {
+            border-bottom: none;
+        }
+        .task-priority { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
+        .priority-high { background: #ff6b6b; }
+        .priority-medium { background: #ffeaa7; }
+        .priority-low { background: #74b9ff; }
+
+        .btn {
+            padding: 8px 16px; border: none; border-radius: 6px;
+            cursor: pointer; text-decoration: none; display: inline-block;
+            transition: all 0.3s ease; font-size: 0.9rem;
+            margin-top: 15px; /* Memberi jarak dari konten di atasnya */
+        }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+
+        .progress-bar { background: #eee; height: 8px; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #00b894, #00a085); transition: width 0.3s ease; }
+        .data-structure-badge { background: rgba(255, 255, 255, 0.2); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: 10px; }
+
+        /* Footer Credits */
+        .footer-credits {
+            /* Dihapus position: fixed agar tidak menimpa konten saat scroll jika main-content panjang */
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
             text-align: center;
             font-size: 0.9rem;
+            margin-top: 30px; /* Jarak dari grid dashboard */
         }
         .footer-credits a { color: #A8D5FF; text-decoration: none; }
         .footer-credits a:hover { text-decoration: underline; }
+
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                /* Tambahkan tombol untuk toggle sidebar di mobile view jika diperlukan */
+            }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .user-info { margin-left: 0; margin-top: 10px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="#">SmartLife Dashboard</a>
-            {% if user.is_authenticated %}
-            <span class="navbar-text me-3">Halo, {{ user.username }}!</span>
-            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-            </form>
-            {% endif %}
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="dashboard-header">
-            <h1>Selamat Datang, {{ user.username|default:"Pengguna" }}!</h1>
-            <p class="text-muted">Atur hidup Anda dengan lebih cerdas.</p>
+    <div class="sidebar">
+        <div class="logo">
+            <h2><i class="fas fa-brain"></i> SmartLife</h2>
         </div>
 
-        <div class="row">
-            <div class="col-md-7">
-                <div class="widget-card" id="today-overview">
-                    <h5 class="widget-title"><i class="fas fa-sun me-2"></i>Hari Ini Sekilas</h5>
-                    <p><strong>Tugas Mendesak:</strong> <em>(Data dari Heap/Priority Queue)</em></p>
-                    <ul>
-                        <li>Selesaikan laporan A</li>
-                        <li>Bayar tagihan B</li>
-                    </ul>
-                    <p><strong>Jadwal Berikutnya:</strong> <em>(Data dari Sorted List)</em></p>
-                    <ul>
-                        <li>10:00 - Meeting Tim</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="widget-card quick-actions text-center">
-                    <h5 class="widget-title"><i class="fas fa-rocket me-2"></i>Aksi Cepat</h5>
-                    <a href="#" class="btn btn-primary"><i class="fas fa-plus-circle me-1"></i> Tugas Baru</a>
-                    <a href="#" class="btn btn-success"><i class="fas fa-sticky-note me-1"></i> Catatan Baru</a>
-                    <a href="#" class="btn btn-info"><i class="fas fa-calendar-plus me-1"></i> Acara Baru</a>
-                </div>
-            </div>
-        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="{% url 'users:dashboard' %}" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'tasks:task_queue' %}" class="nav-link">
+                    <i class="fas fa-tasks"></i> Manajemen Tugas
+                </a>
+            </li>
+            <li class="nav-item">
+                 <a href="{% url 'schedule:schedule_list' %}" class="nav-link">
+                 <i class="fas fa-calendar-alt"></i>
+                     Penjadwalan
+             </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link"> <i class="fas fa-sticky-note"></i> Pencatatan
+                </a>
+            </li>
+            <li class="nav-item">
+                <form action="{% url 'users:logout' %}" method="post" style="display: contents;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link" style="background:none; border:none; width:100%; text-align:left; cursor:pointer; padding-left: 15px;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="widget-card" id="task-summary">
-                    <h5 class="widget-title"><i class="fas fa-tasks me-2"></i>Tugas Saya</h5>
-                    <p>5 Tugas Belum Selesai. <em>(Data dari Queue/List)</em></p>
-                    <a href="#">Lihat Semua Tugas</a>
-                </div>
+    <div class="main-content">
+        <div class="header">
+            <div class="welcome-text">
+                <h1>Selamat Datang, {{ user.username|default:"Pengguna" }}!</h1>
+                <p>Kelola hidup Anda dengan lebih cerdas dan terstruktur</p>
             </div>
-            <div class="col-md-4">
-                <div class="widget-card" id="notes-summary">
-                    <h5 class="widget-title"><i class="fas fa-book-open me-2"></i>Catatan Saya</h5>
-                    <p>3 Catatan Terbaru. <em>(Data dari Stack/List)</em></p>
-                    <a href="#">Lihat Semua Catatan</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="widget-card" id="schedule-summary">
-                    <h5 class="widget-title"><i class="fas fa-calendar-alt me-2"></i>Jadwal Saya</h5>
-                    <p>2 Acara Minggu Ini. <em>(Data dari Tree/Sorted List)</em></p>
-                    <a href="#">Lihat Kalender</a>
-                </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>{{ user.username|default:"User" }} {% if user.is_staff %}(Admin){% endif %}</span>
             </div>
         </div>
 
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tugas Prioritas Tinggi</h3>
+                    <div class="card-icon priority-tasks"><i class="fas fa-fire"></i></div>
+                </div>
+                <div class="card-content">
+                    {% if priority_tasks %}
+                        {% for task in priority_tasks %}
+                        <div class="task-item">
+                            <div class="task-priority priority-{{ task.priority_level|default:'medium' }}"></div>
+                            <div>
+                                <strong>{{ task.name }}</strong>
+                                <div style="font-size: 0.8rem; color: #666;">Deadline: {{ task.due_date|date:"D, d M Y"|default:"N/A" }}</div>
+                            </div>
+                            <span class="data-structure-badge">{{ task.data_structure_used|default:"Heap" }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Tidak ada tugas prioritas tinggi saat ini.</p>
+                    {% endif %}
+                </div>
+                <a href="{% url 'tasks:task_queue' %}" class="btn btn-primary">Lihat Semua Tugas</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Jadwal Hari Ini</h3>
+                    <div class="card-icon today-schedule"><i class="fas fa-clock"></i></div>
+                </div>
+                <div class="card-content">
+                    {% if today_schedule %}
+                        {% for event in today_schedule %}
+                        <div class="schedule-item">
+                            <div style="width: 60px; text-align: center; font-weight: bold; color: #667eea;">{{ event.time|time:"H:i" }}</div>
+                            <div>
+                                <strong>{{ event.title }}</strong>
+                                <div style="font-size: 0.8rem; color: #666;">{{ event.location|default:"-" }}</div>
+                            </div>
+                            <span class="data-structure-badge">{{ event.data_structure_used|default:"BST/List" }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Tidak ada jadwal untuk hari ini.</p>
+                    {% endif %}
+                </div>
+                <a href="#" class="btn btn-primary">Lihat Kalender</a> </div>
+
+            <div class="card">
+                 <div class="card-header">
+                    <h3 class="card-title">Catatan Terbaru</h3>
+                    <div class="card-icon quick-notes"><i class="fas fa-edit"></i></div>
+                </div>
+                <div class="card-content">
+                    {% if recent_notes %}
+                        {% for note in recent_notes %}
+                        <div class="note-item">
+                            <div>
+                                <strong>{{ note.title }}</strong>
+                                <div style="font-size: 0.8rem; color: #666;">Diupdate {{ note.updated_at|timesince }} lalu</div>
+                                <div style="font-size: 0.9rem; margin-top: 5px;">{{ note.snippet|truncatewords:10 }}</div>
+                            </div>
+                            <span class="data-structure-badge">{{ note.data_structure_used|default:"Stack/List" }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Belum ada catatan.</p>
+                    {% endif %}
+                </div>
+                <a href="#" class="btn btn-primary">Lihat Semua Catatan</a> </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pengingat Sosial</h3>
+                    <div class="card-icon social-reminders"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="card-content">
+                     {% if social_reminders %}
+                        {% for reminder in social_reminders %}
+                        <div class="contact-item">
+                            <div>
+                                <strong>{{ reminder.event_name }} - {{ reminder.contact_name }}</strong>
+                                <div style="font-size: 0.8rem; color: #666;">{{ reminder.detail }}</div>
+                            </div>
+                            <span class="data-structure-badge">{{ reminder.data_structure_used|default:"Graph/Dict" }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Tidak ada pengingat sosial.</p>
+                    {% endif %}
+                </div>
+                <a href="#" class="btn btn-primary">Kelola Kontak</a> </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Progress Tujuan</h3>
+                    <div class="card-icon goals-progress"><i class="fas fa-chart-line"></i></div>
+                </div>
+                <div class="card-content">
+                    {% for goal in goals_progress %}
+                    <div style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span><strong>{{ goal.name }}</strong></span>
+                            <span>{{ goal.progress }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ goal.progress }}%;"></div>
+                        </div>
+                        <span class="data-structure-badge">{{ goal.data_structure_used|default:"Tree/Heap" }}</span>
+                    </div>
+                    {% empty %}
+                    <p>Belum ada progress tujuan yang dilacak.</p>
+                    {% endfor %}
+                </div>
+                <a href="#" class="btn btn-primary">Kelola Tujuan</a> </div>
+
+            <div class="card data-structure-info" style="background: linear-gradient(135deg, #5964BE, #8250A6);"> <div class="card-header">
+                    <h3 class="card-title" style="color: white;">Struktur Data Aktif</h3>
+                    <div class="card-icon" style="background: rgba(255,255,255,0.2);"><i class="fas fa-code"></i></div>
+                </div>
+                <div class="card-content" style="color: white;">
+                    {% for ds_info in active_data_structures %}
+                    <div style="margin-bottom: 10px;">
+                        <strong><i class="{{ ds_info.icon_class|default:'fas fa-project-diagram' }} me-2"></i>{{ ds_info.name }}:</strong> {{ ds_info.usage_description }}
+                    </div>
+                    {% empty %}
+                    <p>Informasi struktur data akan tampil di sini.</p>
+                    {% endfor %}
+                </div>
+                <a href="#" class="btn" style="background: rgba(255,255,255,0.2); color: white;">Pelajari Lebih Lanjut</a> </div>
         </div> <div class="footer-credits">
-        Dibuat oleh: Nama1, Nama2, Nama3, Nama4, Nama5, Nama6
+            Dibuat oleh: {{ team_members|join:", " }}
         </div>
+    </div> <script>
+        // JavaScript Anda yang sudah ada (untuk animasi card hover, update badge, dll.)
+        // Pastikan tidak ada konflik dengan fungsi Django atau jQuery jika Anda pakai.
+        // Mobile sidebar toggle perlu dibuat jika belum ada (misalnya tombol hamburger di header mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    // Anda bisa menghapus this.style.transform jika efek hover sudah ada di CSS :hover
+                });
+                card.addEventListener('mouseleave', function() {
+                    // Anda bisa menghapus this.style.transform jika efek hover sudah ada di CSS :hover
+                });
+            });
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    </body>
+            // Contoh: Mengaktifkan sidebar di mobile (perlu tombol pemicu)
+            // const sidebar = document.querySelector('.sidebar');
+            // const sidebarToggleBtn = document.getElementById('sidebarToggle'); // Anda perlu buat tombol ini
+            // if(sidebarToggleBtn) {
+            //     sidebarToggleBtn.addEventListener('click', function() {
+            //         sidebar.classList.toggle('active');
+            //     });
+            // }
+        });
+    </script>
+</body>
 </html>

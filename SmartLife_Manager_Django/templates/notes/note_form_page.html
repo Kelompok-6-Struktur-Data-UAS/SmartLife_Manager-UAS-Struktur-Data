@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> </head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'notes:note_list' %}"><i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Catatan</a>
+        </div>
+    </nav>
+
+    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+        <h2><i class="fas fa-edit me-2"></i>{{ title }}</h2>
+        <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
+
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-card"> <form method="post"> {% csrf_token %}
+                <div class="mb-3">
+                    <label for="note_title_input" class="form-label" style="color:#555; font-weight:500;">Judul Catatan:</label>
+                    <input type="text" class="form-control" id="note_title_input" name="note_title" value="{{ note_title|default:'' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="note_content_input" class="form-label" style="color:#555; font-weight:500;">Isi Catatan:</label>
+                    <textarea class="form-control" id="note_content_input" name="note_content" rows="10" required>{{ note_content|default:'' }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-schedule-action w-100 mt-3"><i class="fas fa-save"></i> Simpan Catatan</button>
+                <a href="{% if note_id %}{% url 'notes:note_detail' note_id %}{% else %}{% url 'notes:note_list' %}{% endif %}" class="btn btn-outline-secondary w-100 mt-2">Batal</a>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

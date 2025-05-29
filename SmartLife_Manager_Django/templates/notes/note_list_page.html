@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Catatan Saya" }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> <style>
+        /* Tambahan style jika perlu */
+        .note-card { margin-bottom: 15px; }
+        .note-card .card-title a { text-decoration: none; color: inherit; }
+        .note-card .card-title a:hover { color: #667eea; }
+        .note-content-preview {
+            max-height: 60px; overflow: hidden; text-overflow: ellipsis;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"> <i class="fas fa-sticky-note me-2"></i>SmartLife - Catatan</a>
+            <div class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
+                    <a class="nav-link" href="{% url 'tasks:task_queue' %}">Antrean Tugas</a>
+                    <a class="nav-link" href="{% url 'schedule:schedule_list' %}">Jadwal</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="fas fa-book-open me-2"></i>{{ title }}</h2>
+            <a href="{% url 'notes:note_create' %}" class="btn btn-schedule-action"><i class="fas fa-plus-circle"></i> Buat Catatan Baru</a>
+        </div>
+
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if struktur_data_info %}
+            <div class="alert alert-info small" role="alert">
+                <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
+            </div>
+        {% endif %}
+        <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
+
+        {% if notes %}
+            <div class="row">
+                {% for note in notes %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card note-card shadow-sm"> {# Mirip event-card #}
+                        <div class="card-body">
+                            <h5 class="card-title mb-2">
+                                <a href="{% url 'notes:note_detail' note.id %}">{{ note.title|truncatechars:50 }}</a>
+                            </h5>
+                            <p class="card-text note-content-preview text-muted small">{{ note.content|truncatewords_html:20|striptags }}</p>
+                            <p class="card-text"><small class="text-muted">Dibuat: {{ note.created_at|date:"d M Y, H:i" }}</small></p>
+                            {% if note.updated_at %}
+                            <p class="card-text"><small class="text-muted">Diupdate: {{ note.updated_at|date:"d M Y, H:i" }}</small></p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 text-end">
+                            <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i> Edit</a>
+                            <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus catatan ini?');"><i class="fas fa-trash"></i> Hapus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-light text-center mt-3">
+                <i class="fas fa-folder-open fa-3x mb-2 d-block" style="color: #ccc;"></i>
+                Belum ada catatan.
+            </div>
+        {% endif %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

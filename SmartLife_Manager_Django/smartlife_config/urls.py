@@ -13,5 +13,9 @@ urlpatterns = [
     path('accounts/', include('users.urls')), # URL untuk login, register, dashboard user dari aplikasi 'users'
     path('admin-area/choice/', admin_choice_view, name='admin_choice'), # URL untuk pilihan admin
     path('', login_view, name='home'), # Path root sekarang mengarah ke halaman login
-                                        # Jika user sudah login, view login akan redirect
+    path('manajemen-tugas/', include('tasks.urls')),  # <-- TAMBAHKAN BARIS INI
+    path('jadwal-kegiatan/', include('schedule.urls')),  # <-- TAMBAHKAN INI
+    path('catatan-saya/', include('notes.urls')),  # <-- TAMBAHKAN INI
+
+    # Jika user sudah login, view login akan redirect
 ]

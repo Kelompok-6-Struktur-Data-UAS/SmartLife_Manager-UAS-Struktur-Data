@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Antrean Tugas" }} - SmartLife Manager</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/tasks_styles.css' %}">
+
+    <style>
+        /* Style inline tambahan jika ada, atau ini bisa dikosongkan jika semua sudah di tasks_styles.css */
+        /* Pastikan body memiliki position relative jika shapes diposisikan absolut terhadap body dan body adalah container utama shapes */
+        body {
+            padding-top: 80px; /* Sesuaikan dengan tinggi navbar Anda jika navbar fixed */
+            background-color: #f4f7f6; /* Warna dasar jika gradien utama ada di tasks_styles.css */
+            position: relative;
+            overflow-x: hidden; /* Mencegah horizontal scroll karena shapes */
+            min-height: 100vh; /* Pastikan body mengisi layar */
+        }
+        .task-queue-container {
+            max-width: 900px;
+            margin: auto;
+            position: relative; /* Agar konten di atas gelembung */
+            z-index: 5;     /* Agar konten di atas gelembung */
+        }
+
+        /* ===== CSS UNTUK GELEMBUNG LATAR BELAKANG ===== */
+        .floating-shapes-background {
+            position: fixed; /* Tetap di background saat scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Gelembung tidak keluar dari viewport */
+            z-index: -1;      /* Di belakang semua konten lain */
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.06); /* Lebih transparan agar tidak dominan */
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite alternate;
+        }
+
+        /* Variasi Gelembung (Lebih Banyak) */
+        .shape.s1 { width: 60px; height: 60px; top: 10%; left: 5%; animation-duration: 23s; }
+        .shape.s2 { width: 130px; height: 130px; top: 70%; left: 80%; animation-duration: 28s; animation-delay: -4s; }
+        .shape.s3 { width: 40px; height: 40px; top: 85%; left: 20%; animation-duration: 17s; animation-delay: -1s; }
+        .shape.s4 { width: 160px; height: 160px; top: 25%; left: 90%; animation-duration: 30s; animation-delay: -8s; }
+        .shape.s5 { width: 50px; height: 50px; top: 5%; left: 40%; animation-duration: 16s; animation-delay: -2s; }
+        .shape.s6 { width: 90px; height: 90px; top: 50%; left: 10%; animation-duration: 26s; animation-delay: -6s; }
+        .shape.s7 { width: 70px; height: 70px; top: 15%; left: 75%; animation-duration: 20s; animation-delay: -3s; }
+        .shape.s8 { width: 110px; height: 110px; top: 75%; left: 50%; animation-duration: 27s; animation-delay: -9s; }
+        .shape.s9 { width: 45px; height: 45px; top: 40%; left: 5%; animation-duration: 19s; animation-delay: -0.5s; }
+        .shape.s10 { width: 100px; height: 100px; top: 5%; left: 95%; animation-duration: 24s; animation-delay: -7.5s; }
+
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(0.8);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translateY(-40px) rotate(180deg) scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(0.8);
+                opacity: 0.2;
+            }
+        }
+        /* ===== AKHIR CSS GELEMBUNG ===== */
+
+    </style>
+</head>
+<body>
+    <div class="floating-shapes-background">
+        <div class="shape s1"></div>
+        <div class="shape s2"></div>
+        <div class="shape s3"></div>
+        <div class="shape s4"></div>
+        <div class="shape s5"></div>
+        <div class="shape s6"></div>
+        <div class="shape s7"></div>
+        <div class="shape s8"></div>
+        <div class="shape s9"></div>
+        <div class="shape s10"></div>
+        </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position:relative; z-index:10;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"> <i class="fas fa-brain me-2"></i>SmartLife - Antrean Tugas
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavApp" aria-controls="navbarNavApp" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavApp">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard Utama</a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link" style="color: rgba(255,255,255,.75); text-decoration: none; background: none; border: none; padding: .5rem 1rem; cursor:pointer;">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 task-queue-container"> {# Kelas ini akan mengambil style dari tasks_styles.css #}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="fas fa-tasks me-2"></i>{{ title|default:"Antrean Tugas" }}</h2>
+        </div>
+
+        {% if messages %}
+            <div class="messages-container"> {# Wrapper untuk messages agar bisa di-style dari tasks_styles.css #}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if struktur_data_info %}
+            <div class="alert alert-info small" role="alert">
+                <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
+            </div>
+        {% endif %}
+        <hr class="mb-4" style="border-color: rgba(0,0,0,0.1);"> {# Warna hr disesuaikan agar terlihat #}
+
+        <div class="row">
+            <div class="col-lg-7 mb-4">
+                <div class="form-add-task-card"> {# Kelas ini akan mengambil style dari tasks_styles.css #}
+                    <h4><i class="fas fa-plus-circle"></i> Tambah Tugas Baru</h4>
+                    <form method="post" action="{% url 'tasks:add_task' %}" class="mt-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="task_description_input" class="form-label" style="color: #555; font-weight:500;">Deskripsi Tugas:</label>
+                            <input type="text" class="form-control" id="task_description_input" name="task_description" required placeholder="Contoh: Selesaikan laporan mingguan">
+                        </div>
+                        <button type="submit" class="btn btn-task-primary w-100"><i class="fas fa-plus"></i> Tambah ke Antrean</button> {# Menggunakan kelas dari tasks_styles.css #}
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="task-list-card"> {# Kelas ini akan mengambil style dari tasks_styles.css #}
+                    <h4><i class="fas fa-list-ol"></i> Antrean Tugas Saat Ini:</h4>
+                    {% if tasks %}
+                        <p class="text-muted small">Total tugas dalam antrean: <strong>{{ tasks|length }}</strong></p>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for task_item in tasks %}
+                                <li class="list-group-item task-item {% if forloop.first %}next-task-highlight{% endif %}"> {# Kelas-kelas ini akan mengambil style dari tasks_styles.css #}
+                                    <span>{{ task_item }}</span>
+                                    {% if forloop.first %}
+                                        <span class="badge bg-success">Berikutnya</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% if next_task %}
+                        <form method="post" action="{% url 'tasks:process_task' %}" class="mt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-task-success w-100"><i class="fas fa-check-circle"></i> Proses "{{ next_task|truncatechars:20 }}"</button> {# Menggunakan kelas dari tasks_styles.css #}
+                        </form>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-light text-center mt-3" role="alert">
+                            <i class="fas fa-coffee fa-3x mb-2 d-block" style="color: #ccc;"></i>
+                            Antrean tugas kosong. Selamat!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

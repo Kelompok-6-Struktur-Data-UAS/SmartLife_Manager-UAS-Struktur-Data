@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> <style>
+        .note-detail-content { white-space: pre-wrap; /* Agar baris baru dihormati */ }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+         <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'notes:note_list' %}"><i class="fas fa-arrow-left me-2"></i>Daftar Catatan</a>
+        </div>
+    </nav>
+
+    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+        {% if note %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-sticky-note me-2"></i>{{ note.title }}</h2>
+                <div>
+                    <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-schedule-action me-2"><i class="fas fa-edit"></i> Edit</a>
+                    <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger-schedule" onclick="return confirm('Yakin ingin menghapus catatan ini?');"><i class="fas fa-trash"></i> Hapus</button>
+                    </form>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.2);">
+            <div class="form-card p-4"> <p class="text-muted small">Dibuat: {{ note.created_at|date:"d M Y, H:i" }}
+                    {% if note.updated_at %}
+                        | Diupdate: {{ note.updated_at|date:"d M Y, H:i" }}
+                    {% endif %}
+                </p>
+                <div class="note-detail-content mt-3">
+                    {{ note.content|linebreaksbr }} {# Menampilkan konten dengan baris baru #}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">Catatan tidak ditemukan.</div>
+        {% endif %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
