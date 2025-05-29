@@ -1,10 +1,106 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>SmartLife_Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Dashboard" }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding-top: 20px; padding-bottom: 80px; /* Ruang untuk footer */ }
+        .dashboard-header { margin-bottom: 30px; text-align: center; }
+        .widget-card { background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 20px; }
+        .widget-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: #333; }
+        .quick-actions .btn { margin: 5px; font-size: 1rem; padding: 10px 15px; }
+        .footer-credits {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #343a40; /* Warna gelap untuk footer */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .footer-credits a { color: #A8D5FF; text-decoration: none; }
+        .footer-credits a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">SmartLife Dashboard</a>
+            {% if user.is_authenticated %}
+            <span class="navbar-text me-3">Halo, {{ user.username }}!</span>
+            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+            {% endif %}
+        </div>
+    </nav>
 
-</body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Selamat Datang, {{ user.username|default:"Pengguna" }}!</h1>
+            <p class="text-muted">Atur hidup Anda dengan lebih cerdas.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class="widget-card" id="today-overview">
+                    <h5 class="widget-title"><i class="fas fa-sun me-2"></i>Hari Ini Sekilas</h5>
+                    <p><strong>Tugas Mendesak:</strong> <em>(Data dari Heap/Priority Queue)</em></p>
+                    <ul>
+                        <li>Selesaikan laporan A</li>
+                        <li>Bayar tagihan B</li>
+                    </ul>
+                    <p><strong>Jadwal Berikutnya:</strong> <em>(Data dari Sorted List)</em></p>
+                    <ul>
+                        <li>10:00 - Meeting Tim</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="widget-card quick-actions text-center">
+                    <h5 class="widget-title"><i class="fas fa-rocket me-2"></i>Aksi Cepat</h5>
+                    <a href="#" class="btn btn-primary"><i class="fas fa-plus-circle me-1"></i> Tugas Baru</a>
+                    <a href="#" class="btn btn-success"><i class="fas fa-sticky-note me-1"></i> Catatan Baru</a>
+                    <a href="#" class="btn btn-info"><i class="fas fa-calendar-plus me-1"></i> Acara Baru</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="widget-card" id="task-summary">
+                    <h5 class="widget-title"><i class="fas fa-tasks me-2"></i>Tugas Saya</h5>
+                    <p>5 Tugas Belum Selesai. <em>(Data dari Queue/List)</em></p>
+                    <a href="#">Lihat Semua Tugas</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="widget-card" id="notes-summary">
+                    <h5 class="widget-title"><i class="fas fa-book-open me-2"></i>Catatan Saya</h5>
+                    <p>3 Catatan Terbaru. <em>(Data dari Stack/List)</em></p>
+                    <a href="#">Lihat Semua Catatan</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="widget-card" id="schedule-summary">
+                    <h5 class="widget-title"><i class="fas fa-calendar-alt me-2"></i>Jadwal Saya</h5>
+                    <p>2 Acara Minggu Ini. <em>(Data dari Tree/Sorted List)</em></p>
+                    <a href="#">Lihat Kalender</a>
+                </div>
+            </div>
+        </div>
+
+        </div> <div class="footer-credits">
+        Dibuat oleh: Nama1, Nama2, Nama3, Nama4, Nama5, Nama6
+        </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>
