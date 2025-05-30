@@ -1,0 +1,120 @@
+/* static/css/education_styles.css */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333; /* Warna teks default untuk konten di atas background body */
+    padding-top: 80px; /* Sesuaikan jika navbar fixed */
+    padding-bottom: 40px;
+}
+
+.education-page-container {
+    max-width: 900px; /* Lebar standar untuk halaman konten */
+    margin: 0 auto;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.08); /* Background lembut di atas gradien body */
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    color: #fff; /* Teks utama di container ini berwarna putih */
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.page-header h1 {
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.page-header h1 i {
+    margin-right: 10px;
+    color: rgba(255,255,255,0.8);
+}
+.page-header .lead {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 10px;
+}
+
+.content-card {
+    background: rgba(255, 255, 255, 0.98); /* Kartu konten utama lebih solid */
+    color: #333; /* Teks di dalam kartu menjadi gelap */
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.content-card section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #667eea; /* Warna aksen tema */
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+    display: inline-block; /* Agar border hanya selebar teks */
+}
+.section-title i {
+    margin-right: 10px;
+}
+
+.content-card p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+.content-card ul.list-styled {
+    list-style: none;
+    padding-left: 0;
+}
+.content-card ul.list-styled li {
+    padding-left: 25px;
+    position: relative;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+.content-card ul.list-styled li::before {
+    content: "\f058"; /* Font Awesome check-circle */
+    font-family: "Font Awesome 6 Free"; /* Atau "Font Awesome 5 Free" jika versi itu */
+    font-weight: 900; /* Solid icon */
+    position: absolute;
+    left: 0;
+    color: #667eea; /* Warna ikon */
+    font-size: 1.1em;
+}
+
+.impact-item {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    height: 100%; /* Agar semua kartu sama tinggi jika dalam satu baris */
+    border: 1px solid #e9ecef;
+}
+.impact-item i.text-impact {
+    color: #764ba2; /* Warna aksen kedua */
+    margin-bottom: 10px;
+}
+.impact-item h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+.impact-item p {
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center; /* Override text-align justify */
+}
+
+/* Style untuk pesan Django (jika belum ada di CSS global Anda) */
+.messages-container .alert { max-width: 100%; margin-bottom: 15px; }

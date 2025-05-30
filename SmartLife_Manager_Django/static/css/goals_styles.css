@@ -1,0 +1,72 @@
+/* static/css/goals_styles.css */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding-top: 80px;
+    padding-bottom: 20px;
+}
+
+.goals-page-container {
+    max-width: 900px; margin: 0 auto; padding: 20px;
+    background-color: rgba(255, 255, 255, 0.08); backdrop-filter: blur(5px);
+    border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); color: #fff;
+}
+
+.goals-page-container h2, .goals-page-container h3, .goals-page-container h4 {
+    color: #ffffff; font-weight: 600; margin-bottom: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.goals-page-container h2 i, .goals-page-container h3 i, .goals-page-container h4 i {
+    margin-right: 10px; color: rgba(255, 255, 255, 0.85);
+}
+
+.goals-page-container .alert-info {
+    background-color: rgba(255, 255, 255, 0.2); border-left: 4px solid #fff; color: #fff; border-radius: 8px;
+}
+
+.form-card {
+    background: rgba(255, 255, 255, 0.98); color: #333;
+    border-radius: 12px; padding: 25px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); margin-bottom: 30px;
+}
+.form-card h4 { color: #00b894; border-bottom: 1px solid #e9ecef; padding-bottom: 10px; } /* Aksen Hijau */
+.form-card h4 i { color: #00b894; }
+
+.form-card .form-control {
+    background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px;
+    padding: 10px 15px; font-size: 0.95rem;
+}
+.form-card .form-control:focus {
+    background: white; border-color: #00b894;
+    box-shadow: 0 0 0 0.2rem rgba(0, 184, 148, 0.25);
+}
+
+.btn-goal-action {
+    background: linear-gradient(135deg, #00b894 0%, #00a085 100%); border: none; /* Gradien Hijau */
+    border-radius: 10px; padding: 10px 20px; font-size: 1rem; font-weight: 600; color: white;
+}
+.btn-goal-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3); }
+
+.goal-item {
+    background-color: #fff; border-left: 5px solid #00b894; /* Aksen Hijau */
+    margin-bottom: 10px; border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+}
+.goal-item.goal-completed {
+    border-left-color: #6c757d; /* Abu-abu untuk yang selesai */
+    opacity: 0.7;
+}
+.goal-item .goal-title { font-weight: 600; color: #343a40; }
+.goal-item .goal-description { font-size: 0.9em; color: #555; }
+.goal-item .progress { height: 8px !important; } /* Override tinggi progress bar Bootstrap */
+.goal-item .bg-goal-progress { background-color: #00b894 !important; } /* Warna progress */
+
+.no-items-message {
+    background-color: rgba(255, 255, 255, 0.9); color: #6c757d; padding: 30px;
+    border-radius: 10px; text-align: center; border: 1px dashed #d1d9e1;
+}
+.no-items-message i { font-size: 2.5rem; margin-bottom: 10px; display: block; color: #adb5bd; }
+
+/* Style untuk pesan Django */
+.messages-container .alert { max-width: 100%; margin-bottom: 15px; }

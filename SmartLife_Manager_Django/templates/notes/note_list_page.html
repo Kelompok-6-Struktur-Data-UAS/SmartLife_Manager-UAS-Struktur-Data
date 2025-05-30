@@ -5,37 +5,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title|default:"Catatan Saya" }} - SmartLife Manager</title>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> <style>
-        /* Tambahan style jika perlu */
-        .note-card { margin-bottom: 15px; }
-        .note-card .card-title a { text-decoration: none; color: inherit; }
-        .note-card .card-title a:hover { color: #667eea; }
-        .note-content-preview {
-            max-height: 60px; overflow: hidden; text-overflow: ellipsis;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
+
+    <style>
+        /* Style dasar body jika tidak di-cover oleh schedule_styles.css */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; /* Warna teks default untuk konten di atas background body */
+            padding-top: 80px; /* Ruang untuk navbar fixed */
+            padding-bottom: 20px;
         }
+
+        /* Style spesifik untuk kartu catatan, mirip dengan schedule_styles.css */
+        .note-card {
+            margin-bottom: 20px;
+            border-left: 5px solid #fdcb6e; /* Warna aksen kuning untuk catatan */
+            background-color: #fff; /* Pastikan kartu punya background solid */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        .note-card .card-title a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+        }
+        .note-card .card-title a:hover {
+            color: #667eea;
+        }
+        .note-content-preview {
+            font-size: 0.9rem;
+            color: #555;
+            max-height: 80px; /* Batasi tinggi preview konten */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Batasi hingga 3 baris */
+            -webkit-box-orient: vertical;
+        }
+        .note-meta {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 10px;
+        }
+        .card-footer.bg-transparent { /* Pastikan footer kartu terlihat baik */
+            border-top: 1px solid #f0f0f0 !important; /* Border yang lebih jelas */
+        }
+        .no-notes-message { /* Menggunakan style yang mirip dengan no-events-message */
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #6c757d;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px dashed #d1d9e1;
+        }
+        .no-notes-message i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+            color: #adb5bd;
+        }
+        /* Container utama (jika schedule_styles.css belum punya definisi yang cocok) */
+        .notes-page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            color: #fff;
+        }
+        .notes-page-container h2 {
+            color: #ffffff;
+            font-weight: 600;
+        }
+         .notes-page-container h2 i{
+             color: rgba(255,255,255,0.85);
+         }
+        .notes-page-container .alert-info {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #fff;
+            color: #fff;
+        }
+        .btn-notes-action { /* Tombol utama di halaman catatan */
+            background: linear-gradient(135deg, #fdcb6e 0%, #ffa500 100%); /* Gradien kuning/oranye untuk catatan */
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        }
+        .btn-notes-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(253, 203, 110, 0.4);
+        }
+
+        /* Pesan Django */
+        .messages-container .alert { max-width: 100%; margin-bottom: 15px; }
+        .alert.alert-success { background-color: #d1e7dd; color: #0a3622; border-left: 5px solid #0f5132;}
+        .alert.alert-info    { background-color: #cff4fc; color: #055160; border-left: 5px solid #055160;}
+        .alert.alert-warning { background-color: #fff3cd; color: #664d03; border-left: 5px solid #664d03;}
+        .alert.alert-danger, .alert-alert-error   { background-color: #f8d7da; color: #58151c; border-left: 5px solid #58151c;}
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/"> <i class="fas fa-sticky-note me-2"></i>SmartLife - Catatan</a>
-            <div class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
-                    <a class="nav-link" href="{% url 'tasks:task_queue' %}">Antrean Tugas</a>
-                    <a class="nav-link" href="{% url 'schedule:schedule_list' %}">Jadwal</a>
-                {% endif %}
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="fas fa-book-open me-2"></i>SmartLife - Catatan Saya
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavNotes" aria-controls="navbarNavNotes" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavNotes">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tasks:task_queue' %}">Antrean Tugas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'schedule:schedule_list' %}">Jadwal</a></li>
+                        <li class="nav-item">
+                            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link" style="color: rgba(255,255,255,.75); text-decoration: none; background: none; border: none; padding: .5rem 1rem; cursor:pointer;">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+    <div class="container notes-page-container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2><i class="fas fa-book-open me-2"></i>{{ title }}</h2>
-            <a href="{% url 'notes:note_create' %}" class="btn btn-schedule-action"><i class="fas fa-plus-circle"></i> Buat Catatan Baru</a>
+            <h2><i class="fas fa-book-open me-2"></i>{{ title|default:"Catatan Saya" }}</h2>
+            <a href="{% url 'notes:note_create' %}" class="btn btn-notes-action"><i class="fas fa-plus-circle"></i> Buat Catatan Baru</a>
         </div>
 
         {% if messages %}
@@ -50,42 +168,64 @@
         {% endif %}
 
         {% if struktur_data_info %}
-            <div class="alert alert-info small" role="alert">
-                <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
-            </div>
+        <div class="alert alert-info small" role="alert">
+            <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
+        </div>
         {% endif %}
         <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
 
         {% if notes %}
-            <div class="row">
-                {% for note in notes %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card note-card shadow-sm"> {# Mirip event-card #}
-                        <div class="card-body">
-                            <h5 class="card-title mb-2">
-                                <a href="{% url 'notes:note_detail' note.id %}">{{ note.title|truncatechars:50 }}</a>
-                            </h5>
-                            <p class="card-text note-content-preview text-muted small">{{ note.content|truncatewords_html:20|striptags }}</p>
-                            <p class="card-text"><small class="text-muted">Dibuat: {{ note.created_at|date:"d M Y, H:i" }}</small></p>
+        <div class="row">
+            {% for note in notes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card note-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-2">
+                            <a href="{% url 'notes:note_detail' note.id %}">{{ note.title|truncatechars:40 }}</a>
+                        </h5>
+                        <p class="card-text note-content-preview">{{ note.content|striptags|truncatewords_html:20 }}</p>
+                        <p class="note-meta mb-0">
                             {% if note.updated_at %}
-                            <p class="card-text"><small class="text-muted">Diupdate: {{ note.updated_at|date:"d M Y, H:i" }}</small></p>
+                                Diupdate: {{ note.updated_at|timesince }} lalu
+                            {% else %}
+                                Dibuat: {{ note.created_at|timesince }} lalu
                             {% endif %}
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0 text-end">
-                            <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i> Edit</a>
-                            <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline">
+                        </p>
+                    </div>
+                <div class="card-footer bg-light text-end py-2">
+                    <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-outline-primary me-1" title="Edit"><i class="fas fa-edit"></i></a>
+
+                    {# --- TOMBOL HAPUS BARU --- #}
+                    <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline" onsubmit="return confirm('Anda yakin ingin menghapus catatan ini secara permanen?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
+                    </form>
+                    {# --- AKHIR TOMBOL HAPUS BARU --- #}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    {% endif %}
+                        <div class="card-footer bg-light text-end py-2"> <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-outline-primary me-1" title="Edit"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                            {# Untuk delete dengan konfirmasi, idealnya link ini ke halaman konfirmasi, lalu tombol di sana yang POST #}
+                            {# Jika ingin langsung delete dengan konfirmasi JS:
+                            <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus catatan ini?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus catatan ini?');"><i class="fas fa-trash"></i> Hapus</button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
+                            #}
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="alert alert-light text-center mt-3">
-                <i class="fas fa-folder-open fa-3x mb-2 d-block" style="color: #ccc;"></i>
-                Belum ada catatan.
+            <div class="no-notes-message mt-3">
+                <i class="fas fa-folder-open"></i>
+                Belum ada catatan. Silakan buat yang pertama!
             </div>
         {% endif %}
     </div>

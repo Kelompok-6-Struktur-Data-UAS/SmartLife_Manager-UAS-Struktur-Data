@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Form Tujuan" }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/goals_styles.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #00b894 0%, #00a085 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'goals:goal_list' %}"><i class="fas fa-arrow-left me-2"></i>Daftar Tujuan</a>
+        </div>
+    </nav>
+
+    <div class="container goals-page-container mt-4">
+        <h2><i class="fas fa-edit me-2"></i>{{ title }}</h2>
+        <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
+
+        {% include "partials/_messages.html" %}
+
+        <div class="form-card">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-goal-action w-100 mt-3"><i class="fas fa-save"></i> Simpan Tujuan</button>
+                <a href="{% if goal %}{% url 'goals:goal_detail' goal.id %}{% else %}{% url 'goals:goal_list' %}{% endif %}" class="btn btn-outline-secondary w-100 mt-2">Batal</a>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

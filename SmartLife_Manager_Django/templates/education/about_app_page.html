@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Tentang Aplikasi" }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/education_styles.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 fixed-top" style="background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="fas fa-info-circle me-2"></i>SmartLife - Tentang Aplikasi
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavEducation" aria-controls="navbarNavEducation" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavEducation">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tasks:task_queue' %}">Tugas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'schedule:schedule_list' %}">Jadwal</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'notes:note_list' %}">Catatan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'goals:goal_list' %}">Tujuan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'contacts:contact_list' %}">Kontak</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container education-page-container mt-4">
+        <div class="page-header mb-4">
+            <h1><i class="fas fa-brain me-2"></i>{{ title|default:"Tentang SmartLife Manager" }}</h1>
+            <p class="lead">Memahami Lebih Dalam Aplikasi Produktivitas Cerdas Anda.</p>
+        </div>
+        <hr class="mb-4">
+
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="content-card">
+            <section class="mb-5">
+                <h3 class="section-title"><i class="fas fa-rocket me-2"></i>Apa itu SmartLife Manager?</h3>
+                <p><strong>SmartLife Manager</strong> adalah aplikasi web inovatif yang dirancang sebagai asisten pribadi digital Anda. Aplikasi ini bukan hanya alat bantu produktivitas biasa, melainkan sebuah platform komprehensif untuk membantu Anda mengelola berbagai aspek penting dalam kehidupan sehari-hari dengan cara yang lebih terstruktur, efisien, dan cerdas. Mulai dari tugas harian, jadwal padat, catatan penting, prioritas tujuan, hingga relasi sosial, semuanya dapat diorganisir dengan lebih baik.</p>
+                <p>Keunikan SmartLife Manager terletak pada pendekatannya yang mengintegrasikan prinsip-prinsip fundamental ilmu komputer, khususnya penggunaan beragam <strong>struktur data</strong>. Kami percaya bahwa dengan memahami bagaimana data Anda dikelola di balik layar, Anda tidak hanya mendapatkan fungsionalitas, tetapi juga wawasan edukatif yang berharga.</p>
+            </section>
+
+            <section class="mb-5">
+                <h3 class="section-title"><i class="fas fa-bullseye me-2"></i>Tujuan Pengembangan Aplikasi</h3>
+                <ul class="list-styled">
+                    <li><strong>Meningkatkan Produktivitas Pribadi:</strong> Menyediakan alat yang intuitif dan efektif untuk membantu pengguna fokus pada hal yang paling penting dan mencapai target mereka dengan lebih sedikit usaha.</li>
+                    <li><strong>Mengorganisir Informasi Secara Terpusat:</strong> Menjadi satu tempat untuk semua kebutuhan organisasi Anda, mengurangi fragmentasi data dan kebingungan akibat penggunaan banyak aplikasi berbeda.</li>
+                    <li><strong>Menyediakan Pengalaman Belajar Interaktif:</strong> Secara transparan (namun tidak mengganggu) menunjukkan bagaimana konsep abstrak seperti Antrean (Queue), Tumpukan (Stack), Pohon (Tree), Graf (Graph), dan lainnya diterapkan untuk memecahkan masalah nyata dalam pengelolaan data sehari-hari.</li>
+                    <li><strong>Mendorong Pengambilan Keputusan Strategis:</strong> Dengan fitur prioritisasi dan visualisasi data (di masa depan), membantu pengguna membuat keputusan yang lebih baik terkait alokasi waktu dan sumber daya.</li>
+                    <li><strong>Memberdayakan Pengguna:</strong> Memberikan kontrol penuh kepada pengguna atas data dan alur kerja produktivitas mereka.</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h3 class="section-title"><i class="fas fa-users me-2"></i>Dampak Positif bagi Pengguna</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="impact-item">
+                            <i class="fas fa-chart-line fa-2x text-impact mb-2"></i>
+                            <h5>Peningkatan Efisiensi & Fokus</h5>
+                            <p>Alur kerja yang lebih lancar dan pengurangan waktu terbuang untuk mencari informasi atau mengingat tugas.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="impact-item">
+                            <i class="fas fa-smile-beam fa-2x text-impact mb-2"></i>
+                            <h5>Pengurangan Stres & Beban Mental</h5>
+                            <p>Sistem yang terorganisir membantu mengurangi beban mental untuk mengingat semua detail, sehingga lebih tenang.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="impact-item">
+                            <i class="fas fa-lightbulb fa-2x text-impact mb-2"></i>
+                            <h5>Pemahaman Konsep Teknologi</h5>
+                            <p>Mendapatkan wawasan praktis tentang cara kerja struktur data, mengubah teori menjadi aplikasi nyata.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="impact-item">
+                            <i class="fas fa-cogs fa-2x text-impact mb-2"></i>
+                            <h5>Keteraturan & Kontrol Lebih Baik</h5>
+                            <p>Membantu membentuk kebiasaan teratur dan memberikan kendali lebih besar atas aspek kehidupan digital Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-5">
+                <h3 class="section-title"><i class="fas fa-cogs me-2"></i>Fitur Utama & Keterkaitan Struktur Data</h3>
+                <p>Berikut adalah gambaran singkat fitur-fitur yang direncanakan dan bagaimana struktur data berperan:</p>
+                <ul>
+                    <li><strong>Manajemen Tugas:</strong> Menggunakan <strong>Antrean (Queue)</strong> untuk tugas masuk, dan <strong>Heap (Priority Queue)</strong> untuk menampilkan tugas berdasarkan prioritas.</li>
+                    <li><strong>Penjadwalan:</strong> Acara disimpan dan diurutkan (konsep <strong>Sorted List</strong>). Untuk pencarian cepat pada data besar, bisa dioptimalkan dengan <strong>Binary Search Tree (BST)</strong>.</li>
+                    <li><strong>Pencatatan:</strong> Daftar catatan (<strong>List</strong>). Fitur "Undo" atau "Riwayat Akses" dapat memanfaatkan konsep <strong>Tumpukan (Stack)</strong>.</li>
+                    <li><strong>Tujuan & Prioritas:</strong> Tujuan dan sub-tujuan dapat membentuk hierarki (<strong>Tree</strong>). Prioritas tujuan juga bisa dikelola dengan <strong>Heap</strong>.</li>
+                    <li><strong>Relasi Sosial:</strong> Jaringan kontak dan hubungannya secara alami direpresentasikan sebagai <strong>Graf (Graph)</strong>.</li>
+                    <li><strong>Pencarian & Indeks:</strong> Untuk pencarian cepat di berbagai fitur, konsep <strong>Hash Table (Dictionary)</strong> sangat fundamental.</li>
+                </ul>
+                <p>Dengan SmartLife Manager, kami berharap Anda tidak hanya menjadi lebih produktif, tetapi juga terinspirasi oleh kekuatan dan keindahan di balik teknologi yang Anda gunakan setiap hari.</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

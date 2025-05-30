@@ -4,44 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - SmartLife Manager</title>
+    <title>{{ title|default:"Detail Catatan" }} - SmartLife Manager</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> <style>
-        .note-detail-content { white-space: pre-wrap; /* Agar baris baru dihormati */ }
+        /* Style body jika schedule_styles.css belum mengaturnya */
+        /* body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); ... } */
+
+        .note-detail-card {
+            background: rgba(255, 255, 255, 0.98);
+            color: #333;
+            border-radius: 12px;
+            padding: 25px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .note-detail-card h3 {
+            color: #fdcb6e; /* Warna aksen catatan */
+            margin-bottom: 15px;
+        }
+        .note-detail-content {
+            white-space: pre-wrap; /* Agar baris baru dan spasi berlebih dihormati */
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #454545;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+        }
+        .note-meta-detail {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .action-buttons a, .action-buttons button { margin-right: 10px; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
          <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'notes:note_list' %}"><i class="fas fa-arrow-left me-2"></i>Daftar Catatan</a>
+            <div class="navbar-nav ms-auto">
+                 {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
-    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+    <div class="container notes-page-container mt-4"> {# Menggunakan kelas container dari CSS Anda #}
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% if note %}
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2><i class="fas fa-sticky-note me-2"></i>{{ note.title }}</h2>
-                <div>
-                    <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-schedule-action me-2"><i class="fas fa-edit"></i> Edit</a>
-                    <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline">
+                <div class="action-buttons">
+                    <a href="{% url 'notes:note_update' note.id %}" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i> Edit</a>
+                    {# --- TOMBOL HAPUS BARU --- #}
+                    <form action="{% url 'notes:note_delete' note.id %}" method="post" class="d-inline" onsubmit="return confirm('Anda yakin ingin menghapus catatan ini secara permanen?');">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-danger-schedule" onclick="return confirm('Yakin ingin menghapus catatan ini?');"><i class="fas fa-trash"></i> Hapus</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i> Hapus</button>
                     </form>
+                    {# --- AKHIR TOMBOL HAPUS BARU --- #}
                 </div>
             </div>
+            {% else %}
+            {% endif %}
+            <p class="note-meta-detail text-muted">
+                Dibuat: {{ note.created_at|date:"d M Y, H:i" }}
+                {% if note.updated_at and note.updated_at != note.created_at %}
+                    | Diupdate: {{ note.updated_at|date:"d M Y, H:i" }} ({{ note.updated_at|timesince }} lalu)
+                {% endif %}
+            </p>
             <hr style="border-color: rgba(255,255,255,0.2);">
-            <div class="form-card p-4"> <p class="text-muted small">Dibuat: {{ note.created_at|date:"d M Y, H:i" }}
-                    {% if note.updated_at %}
-                        | Diupdate: {{ note.updated_at|date:"d M Y, H:i" }}
-                    {% endif %}
-                </p>
-                <div class="note-detail-content mt-3">
+
+            <div class="note-detail-card">
+                <div class="note-detail-content">
                     {{ note.content|linebreaksbr }} {# Menampilkan konten dengan baris baru #}
                 </div>
             </div>
         {% else %}
-            <div class="alert alert-warning">Catatan tidak ditemukan.</div>
+            <div class="alert alert-warning mt-3">Catatan tidak ditemukan.</div>
         {% endif %}
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

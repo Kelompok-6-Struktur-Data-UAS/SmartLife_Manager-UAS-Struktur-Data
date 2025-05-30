@@ -1,0 +1,71 @@
+/* static/css/contacts_styles.css */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333; padding-top: 80px; padding-bottom: 20px;
+}
+
+.contacts-page-container {
+    max-width: 1100px; margin: 0 auto; padding: 20px;
+    background-color: rgba(255, 255, 255, 0.08); backdrop-filter: blur(5px);
+    border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); color: #fff;
+}
+
+.contacts-page-container h2, .contacts-page-container h4 {
+    color: #ffffff; font-weight: 600; margin-bottom: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.contacts-page-container h2 i, .contacts-page-container h4 i { margin-right: 10px; color: rgba(255,255,255,0.85); }
+.contacts-page-container .alert-info {
+    background-color: rgba(255, 255, 255, 0.2); border-left: 4px solid #fff; color: #fff; border-radius: 8px;
+}
+
+.form-card {
+    background: rgba(255, 255, 255, 0.98); color: #333;
+    border-radius: 12px; padding: 25px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); margin-bottom: 30px;
+}
+.form-card h4 { color: #6c5ce7; border-bottom: 1px solid #e9ecef; padding-bottom: 10px; } /* Aksen Ungu lebih dalam */
+.form-card h4 i { color: #6c5ce7; }
+
+.form-card .form-control {
+    background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px;
+    padding: 10px 15px; font-size: 0.95rem;
+}
+.form-card .form-control:focus {
+    background: white; border-color: #6c5ce7;
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+}
+
+.btn-contact-action { /* Tombol utama di halaman kontak */
+    background: linear-gradient(135deg, #8e76fc 0%, #6c5ce7 100%); border: none; /* Gradien Ungu/Biru */
+    border-radius: 10px; padding: 10px 20px; font-size: 1rem; font-weight: 600; color: white;
+}
+.btn-contact-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3); }
+
+.contact-item-card {
+    background-color: #fff; border-left: 5px solid #8e76fc; /* Aksen Ungu/Biru */
+    margin-bottom: 15px; border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    padding: 15px;
+}
+.contact-item-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.contact-item-card .contact-name a { color: #343a40; text-decoration:none; font-weight: 600; font-size: 1.1rem; }
+.contact-item-card .contact-name a:hover { color: #6c5ce7; }
+.contact-item-card .contact-detail-item { font-size: 0.9em; color: #555; }
+.contact-item-card .contact-detail-item i { color: #8e76fc; }
+.contact-item-card .badge.bg-contact-badge {
+    background-color: #e6e0ff; /* Warna badge yang lembut */
+    color: #5a4aae;
+    font-size: 0.75rem;
+    padding: 0.3em 0.6em;
+}
+.contact-actions .btn { margin-top:0; }
+
+.no-items-message {
+    background-color: rgba(255, 255, 255, 0.9); color: #6c757d; padding: 30px;
+    border-radius: 10px; text-align: center; border: 1px dashed #d1d9e1;
+}
+.no-items-message i { font-size: 2.5rem; margin-bottom: 10px; display: block; color: #adb5bd; }
+
+/* Style untuk pesan Django */
+.messages-container .alert { max-width: 100%; margin-bottom: 15px; }

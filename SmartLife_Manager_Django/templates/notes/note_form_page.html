@@ -4,18 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - SmartLife Manager</title>
+    <title>{{ title|default:"Form Catatan" }} - SmartLife Manager</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}"> </head>
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
+    <style>
+        /* Style body jika schedule_styles.css belum mengaturnya */
+        body {
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            /* min-height: 100vh; */
+            /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+            /* padding-top: 80px; */
+        }
+        /* Style tambahan jika perlu untuk form card, mirip dengan schedule_styles.css */
+        .form-card {
+            background: rgba(255, 255, 255, 0.98);
+            color: #333;
+            border-radius: 12px;
+            padding: 25px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Jarak dari container utama */
+        }
+        .form-card h4 {
+            color: #fdcb6e; /* Warna aksen catatan */
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+         .form-card h4 i { color: #fdcb6e; }
+
+        .btn-note-submit { /* Tombol submit khusus untuk form catatan */
+            background: linear-gradient(135deg, #fdcb6e 0%, #ffa500 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        }
+        .btn-note-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(253, 203, 110, 0.4);
+        }
+    </style>
+</head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #6a7fef 0%, #7f53ac 100%);">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'notes:note_list' %}"><i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Catatan</a>
+            <a class="navbar-brand fw-bold" href="{% url 'notes:note_list' %}">
+                <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Catatan
+            </a>
+            <div class="navbar-nav ms-auto">
+                 {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
-    <div class="container schedule-page-container mt-4"> {# Menggunakan kelas container dari schedule untuk konsistensi #}
+    <div class="container notes-page-container mt-4"> {# Menggunakan kelas container dari CSS Anda #}
         <h2><i class="fas fa-edit me-2"></i>{{ title }}</h2>
         <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
 
@@ -30,17 +78,17 @@
             </div>
         {% endif %}
 
-        <div class="form-card"> <form method="post"> {% csrf_token %}
-                <div class="mb-3">
-                    <label for="note_title_input" class="form-label" style="color:#555; font-weight:500;">Judul Catatan:</label>
-                    <input type="text" class="form-control" id="note_title_input" name="note_title" value="{{ note_title|default:'' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="note_content_input" class="form-label" style="color:#555; font-weight:500;">Isi Catatan:</label>
-                    <textarea class="form-control" id="note_content_input" name="note_content" rows="10" required>{{ note_content|default:'' }}</textarea>
-                </div>
-                <button type="submit" class="btn btn-schedule-action w-100 mt-3"><i class="fas fa-save"></i> Simpan Catatan</button>
-                <a href="{% if note_id %}{% url 'notes:note_detail' note_id %}{% else %}{% url 'notes:note_list' %}{% endif %}" class="btn btn-outline-secondary w-100 mt-2">Batal</a>
+        <div class="form-card">
+            <form method="post"> {% csrf_token %}
+
+                {# Merender form Django. form.as_p akan merender setiap field dalam tag <p> #}
+                {# Anda bisa juga merender field satu per satu untuk kustomisasi lebih jika form.py sudah mengatur widgetnya #}
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-note-submit w-100 mt-3">
+                    <i class="fas fa-save"></i> Simpan Catatan
+                </button>
+                <a href="{% if note %}{% url 'notes:note_detail' note.id %}{% else %}{% url 'notes:note_list' %}{% endif %}" class="btn btn-outline-secondary w-100 mt-2">Batal</a>
             </form>
         </div>
     </div>

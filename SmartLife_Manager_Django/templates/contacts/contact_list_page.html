@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Relasi Sosial" }} - SmartLife Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/contacts_styles.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 fixed-top" style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}"><i class="fas fa-users me-2"></i>SmartLife - Relasi</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavContacts" aria-controls="navbarNavContacts" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavContacts">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tasks:task_queue' %}">Tugas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'schedule:schedule_list' %}">Jadwal</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'notes:note_list' %}">Catatan</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'goals:goal_list' %}">Tujuan</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container contacts-page-container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="fas fa-users me-2"></i>{{ title }}</h2>
+            <a href="{% url 'contacts:contact_create' %}" class="btn btn-contact-action"><i class="fas fa-user-plus"></i> Tambah Kontak Baru</a>
+        </div>
+
+        {% include "partials/_messages.html" %}
+
+        {% if struktur_data_info %}
+        <div class="alert alert-info small" role="alert">
+            <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
+        </div>
+        {% endif %}
+        <hr class="mb-4">
+
+        <div class="form-card mb-4 p-3">
+            <h4 class="mb-3"><i class="fas fa-user-plus"></i> Tambah Kontak Cepat</h4>
+            <form method="post" action="{% url 'contacts:contact_list' %}"> {# Action ke view list untuk form tambah cepat #}
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-contact-action w-100 mt-2">Tambahkan Kontak</button>
+            </form>
+        </div>
+
+        <h4 class="mb-3"><i class="fas fa-address-book"></i> Daftar Kontak Anda ({{ contacts|length }})</h4>
+        {% if contacts %}
+            <div class="row">
+                {% for contact in contacts %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="contact-item-card">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1 contact-name"><a href="{% url 'contacts:contact_detail' contact.id %}">{{ contact.name }}</a></h5>
+                            {% if contact.relationship_type %}<span class="badge bg-contact-badge">{{ contact.relationship_type }}</span>{% endif %}
+                        </div>
+                        {% if contact.email %}<p class="mb-1 contact-detail-item"><i class="fas fa-envelope me-2"></i>{{ contact.email }}</p>{% endif %}
+                        {% if contact.phone_number %}<p class="mb-1 contact-detail-item"><i class="fas fa-phone me-2"></i>{{ contact.phone_number }}</p>{% endif %}
+                        {% if contact.birthday %}<p class="mb-1 contact-detail-item"><i class="fas fa-birthday-cake me-2"></i>{{ contact.birthday|date:"d M Y" }}</p>{% endif %}
+                        <div class="mt-2 text-end contact-actions">
+                            <a href="{% url 'contacts:contact_update' contact.id %}" class="btn btn-sm btn-outline-primary me-1" title="Edit"><i class="fas fa-edit"></i></a>
+                            <form action="{% url 'contacts:contact_delete' contact.id %}" method="post" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus kontak \'{{ contact.name }}\'?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-items-message mt-3">
+                <i class="fas fa-user-friends fa-3x"></i>
+                <p class="mt-2">Belum ada kontak yang disimpan. Tambahkan yang pertama!</p>
+            </div>
+        {% endif %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
