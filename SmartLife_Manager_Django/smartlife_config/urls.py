@@ -1,21 +1,27 @@
 # SmartLife_Manager_Django/smartlife_config/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import render
-from users.views import admin_choice_view, login_view # Impor login_view dari users.views
-
-# Hapus view home_view jika root akan diarahkan ke login
-# def home_view(request):
-#     return render(request, 'index.html', {'title': 'Home SmartLife Manager'})
+# 'render' tidak lagi dibutuhkan di sini jika home_view tidak dipakai
+from users.views import admin_choice_view, login_view  # Impor view yang dibutuhkan
 
 urlpatterns = [
-    path('admin_panel/', admin.site.urls), # Panel Admin Django
-    path('accounts/', include('users.urls')), # URL untuk login, register, dashboard user dari aplikasi 'users'
-    path('admin-area/choice/', admin_choice_view, name='admin_choice'), # URL untuk pilihan admin
-    path('', login_view, name='home'), # Path root sekarang mengarah ke halaman login
-    path('manajemen-tugas/', include('tasks.urls')),  # <-- TAMBAHKAN BARIS INI
-    path('jadwal-kegiatan/', include('schedule.urls')),  # <-- TAMBAHKAN INI
-    path('catatan-saya/', include('notes.urls')),  # <-- TAMBAHKAN INI
+    path('admin_panel/', admin.site.urls),  # Panel Admin Django
 
-    # Jika user sudah login, view login akan redirect
+    # URL Aplikasi Utama
+    path('accounts/', include('users.urls')),  # Untuk login, register, dashboard user, logout
+    path('manajemen-tugas/', include('tasks.urls')),
+    path('jadwal-kegiatan/', include('schedule.urls')),
+    path('catatan-saya/', include('notes.urls')),
+    path('tujuan-prioritas/', include('goals.urls')),
+    path('relasi-sosial/', include('contacts.urls')),
+    path('edukasi/', include('education.urls')),
+    path('profil-saya/', include('profiles.urls')),
+
+    # URL Khusus
+    path('admin-area/choice/', admin_choice_view, name='admin_choice'),  # URL untuk pilihan admin (hanya satu entri)
+
+    # URL Root (Halaman Utama)
+    # Path root sekarang mengarah ke halaman login.
+    # Jika user sudah login, view login akan redirect ke dashboard/admin_choice.
+    path('', login_view, name='home'),  # Hanya satu entri untuk path root
 ]

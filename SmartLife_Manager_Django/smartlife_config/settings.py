@@ -30,10 +30,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',       # Aplikasi 'users' Anda
-    'tasks.apps.TasksConfig',       # Aplikasi 'tasks' Anda <-- Tambahkan koma di sini
-    'schedule.apps.ScheduleConfig',  # <-- TAMBAHKAN KEMBALI SEKARANG
-    'notes.apps.NotesConfig'
+    'users.apps.UsersConfig',
+    'tasks.apps.TasksConfig',
+    'schedule.apps.ScheduleConfig',
+    'notes.apps.NotesConfig',
+    'goals.apps.GoalsConfig',
+    'contacts.apps.ContactsConfig',
+    'education.apps.EducationConfig',
+    'profiles.apps.ProfilesConfig'
     # Tambahkan aplikasi lain di sini nanti, misalnya 'notes', dll.
 ]
 
