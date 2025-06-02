@@ -1,5 +1,4 @@
-# SmartLife_Manager
-Aplikasi Todolis yang bisa digunakan untuk list sesuatu, dengan menggunakan berbagai jenis Struktur Data 
+
 # SmartLife Manager
 
 **SmartLife Manager** adalah aplikasi web inovatif yang dirancang sebagai asisten pribadi digital Anda. Aplikasi ini bertujuan untuk membantu pengguna dalam mengelola berbagai aspek penting kehidupan sehari-hari secara lebih terstruktur, efisien, dan cerdas, dengan penekanan pada aspek edukasi penerapan struktur data.
