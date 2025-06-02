@@ -1,0 +1,92 @@
+/* static/css/main_theme_styles.css */
+
+/* ===== PENGATURAN DASAR BODY (TEMA UTAMA UNGU-BIRU) ===== */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333; /* Warna teks default untuk konten di atas background terang */
+    padding-top: 70px; /* Beri ruang jika navbar Anda fixed-top dengan tinggi sekitar 56-60px */
+    padding-bottom: 20px;
+}
+
+/* ===== NAVBAR THEMED UTAMA ===== */
+.navbar-themed-main {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; /* Gradien ungu-biru utama */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    /* Uncomment jika ingin navbar fixed di atas:
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    */
+}
+
+.navbar-themed-main .navbar-brand,
+.navbar-themed-main .nav-link {
+    color: rgba(255,255,255,0.9) !important; /* Warna link navbar agar kontras */
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-themed-main .navbar-brand:hover,
+.navbar-themed-main .nav-link:hover,
+.navbar-themed-main .nav-link.active { /* Untuk link aktif */
+    color: #fff !important;
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* Untuk tombol logout yang dibuat seperti link di navbar */
+.navbar-themed-main .btn-link.nav-link {
+    color: rgba(255,255,255,.75) !important;
+    background: none !important;
+    border: none !important;
+    padding: .5rem 1rem !important; /* Sesuaikan dengan padding nav-link Bootstrap */
+    cursor: pointer;
+}
+.navbar-themed-main .btn-link.nav-link:hover {
+    color: #fff !important;
+}
+
+.navbar-themed-main .navbar-toggler { /* Tombol hamburger */
+    border-color: rgba(255,255,255,0.3);
+}
+.navbar-themed-main .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+
+/* ===== CONTAINER UTAMA HALAMAN FITUR (Contoh kelas umum) ===== */
+/* Anda bisa memindahkan style .feature-page-container, .content-card, dll. ke sini juga */
+.feature-page-container {
+    max-width: 1100px;
+    margin: 0 auto; /* Otomatis memusatkan dan memberi jarak atas/bawah */
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    color: #fff; /* Teks utama di container ini berwarna putih */
+}
+
+.feature-page-container h2,
+.feature-page-container h4 {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+/* ... (Sertakan style lain yang ingin Anda jadikan global di sini) ... */
+
+/* Style untuk Django Messages (jika ingin global) */
+.messages-container-fixed {
+    position: fixed;
+    top: 80px; /* Sesuaikan jarak dari atas, mungkin di bawah navbar Anda */
+    right: 20px;
+    z-index: 1056;
+    width: auto;
+    max-width: 400px;
+    min-width: 280px;
+}
+/* ... (Style lengkap untuk messages seperti contoh sebelumnya) ... */
