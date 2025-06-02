@@ -340,6 +340,9 @@
     </style>
 </head>
 <body>
+<div class="text-center py-3" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+  <h4 style="margin: 0; color: #5a5a5a; font-weight: 700;">SmartLife Manager</h4>
+</div>
     <div class="register-container">
         <div class="register-card">
             <div class="row g-0 h-100">
@@ -353,11 +356,6 @@
                                 <i class="fas fa-user form-icon"></i>
                                 {{ form.username }}
                                 {% if form.username.errors %}<div class="invalid-feedback d-block" style="font-size: 0.8rem; color: #dc3545; text-align: left;">{% for error in form.username.errors %} {{error}} {% endfor %}</div>{% endif %}
-                            </div>
-                            <div class="form-group">
-                                <i class="fas fa-envelope form-icon"></i>
-                                {{ form.email }}
-                                {% if form.email.errors %}<div class="invalid-feedback d-block" style="font-size: 0.8rem; color: #dc3545; text-align: left;">{% for error in form.email.errors %} {{error}} {% endfor %}</div>{% endif %}
                             </div>
                             <div class="form-group">
                                 <i class="fas fa-lock form-icon"></i>
@@ -383,15 +381,6 @@
                             <button type="submit" class="btn btn-primary">Register</button>
                         </form>
                         
-                        <div class="social-login text-center">
-                            <p class="text-muted mb-3">or register with social platforms</p>
-                            <div>
-                                <a href="#" class="social-btn google"><i class="fab fa-google"></i></a>
-                                <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="social-btn github"><i class="fab fa-github"></i></a>
-                                <a href="#" class="social-btn linkedin"><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

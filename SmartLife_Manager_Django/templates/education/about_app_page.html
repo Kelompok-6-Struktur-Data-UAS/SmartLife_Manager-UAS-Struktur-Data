@@ -7,7 +7,57 @@
     <title>{{ title|default:"Tentang Aplikasi" }} - SmartLife Manager</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'css/education_styles.css' %}">
+
+    <style>
+        /* CSS dari education_styles.css akan dimuat dari file eksternal */
+        /* Anda bisa menambahkan override atau style tambahan di sini jika perlu */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            padding-top: 80px; /* Sesuaikan dengan tinggi navbar jika navbar fixed */
+            padding-bottom: 40px;
+        }
+        /* Pastikan .education-page-container dan .content-card sudah di-style di education_styles.css */
+        /* Berikut adalah contoh style jika belum ada di file CSS eksternal Anda */
+        .education-page-container {
+            max-width: 900px; margin: 0 auto; padding: 25px;
+            background-color: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); color: #fff;
+        }
+        .page-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .page-header h1 { font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); font-size: 2.5rem; }
+        .page-header h1 i { margin-right: 12px; color: rgba(255,255,255,0.9); }
+        .page-header .lead { font-size: 1.15rem; color: rgba(255,255,255,0.85); margin-top: 10px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .content-card-education { background: rgba(255, 255, 255, 0.98); color: #333; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        .content-card-education section { margin-bottom: 35px; }
+        .content-card-education section:last-child { margin-bottom: 0; }
+        .section-title { font-size: 1.7rem; font-weight: 600; color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667eea; display: inline-block; }
+        .section-title i { margin-right: 10px; }
+        .content-card-education p { line-height: 1.75; margin-bottom: 1rem; font-size: 1rem; text-align: justify; }
+        .content-card-education ul.list-styled { list-style: none; padding-left: 0; }
+        .content-card-education ul.list-styled li { padding-left: 30px; position: relative; margin-bottom: 12px; line-height: 1.6; }
+        .content-card-education ul.list-styled li::before { content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: 0; top: 4px; color: #667eea; font-size: 1.2em; }
+        .impact-item { background-color: #f8f9fa; padding: 25px; border-radius: 10px; text-align: center; height: 100%; border: 1px solid #e9ecef; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .impact-item:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .impact-item i.text-impact { color: #764ba2; margin-bottom: 15px; }
+        .impact-item h5 { font-size: 1.15rem; font-weight: 600; color: #333; margin-bottom: 10px; }
+        .impact-item p { font-size: 0.9rem; color: #555; text-align: center; }
+        .team-section { padding-top: 30px; padding-bottom: 40px; background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; margin-top: 40px; }
+        .team-section .section-title { color: #fff; border-bottom-color: rgba(255,255,255,0.5); text-align: center; display: block; margin-left: auto; margin-right: auto; }
+        .team-section .section-title i { color: rgba(255,255,255,0.85); }
+        .team-member-card { background-color: #fff; color: #333; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; margin-bottom: 20px; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
+        .team-member-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+        .profile-icon-wrapper { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px; font-size: 3rem; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4); margin-left: auto; margin-right: auto; }
+        .team-member-card h5.member-name { font-size: 1.2rem; font-weight: 600; color: #667eea; margin-bottom: 5px; }
+        .team-member-card .member-role { font-size: 0.9rem; color: #764ba2; margin-bottom: 10px; font-style: italic; }
+        .team-member-card .member-contribution { font-size: 0.85rem; color: #555; line-height: 1.5; flex-grow: 1; margin-bottom: 15px; }
+        .messages-container .alert { max-width: 100%; margin-bottom: 15px; }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark mb-4 fixed-top" style="background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);">
@@ -39,87 +89,109 @@
     <div class="container education-page-container mt-4">
         <div class="page-header mb-4">
             <h1><i class="fas fa-brain me-2"></i>{{ title|default:"Tentang SmartLife Manager" }}</h1>
-            <p class="lead">Memahami Lebih Dalam Aplikasi Produktivitas Cerdas Anda.</p>
+            <p class="lead">{{ struktur_data_info|default:"Memahami Lebih Dalam Aplikasi Produktivitas Cerdas Anda yang Mengintegrasikan Struktur Data." }}</p>
         </div>
-        <hr class="mb-4">
+        <hr class="mb-4" style="border-color: rgba(255,255,255,0.2);">
 
         {% if messages %}
-            <div class="messages-container">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-            </div>
+            {% include "partials/_messages.html" %}
         {% endif %}
 
-        <div class="content-card">
+        <div class="content-card-education">
             <section class="mb-5">
                 <h3 class="section-title"><i class="fas fa-rocket me-2"></i>Apa itu SmartLife Manager?</h3>
-                <p><strong>SmartLife Manager</strong> adalah aplikasi web inovatif yang dirancang sebagai asisten pribadi digital Anda. Aplikasi ini bukan hanya alat bantu produktivitas biasa, melainkan sebuah platform komprehensif untuk membantu Anda mengelola berbagai aspek penting dalam kehidupan sehari-hari dengan cara yang lebih terstruktur, efisien, dan cerdas. Mulai dari tugas harian, jadwal padat, catatan penting, prioritas tujuan, hingga relasi sosial, semuanya dapat diorganisir dengan lebih baik.</p>
-                <p>Keunikan SmartLife Manager terletak pada pendekatannya yang mengintegrasikan prinsip-prinsip fundamental ilmu komputer, khususnya penggunaan beragam <strong>struktur data</strong>. Kami percaya bahwa dengan memahami bagaimana data Anda dikelola di balik layar, Anda tidak hanya mendapatkan fungsionalitas, tetapi juga wawasan edukatif yang berharga.</p>
+                <p><strong>SmartLife Manager</strong> adalah aplikasi web inovatif yang dirancang untuk merevolusi cara Anda mengatur kehidupan sehari-hari. Kami bukan sekadar aplikasi produktivitas biasa; kami adalah asisten pribadi digital Anda yang cerdas, membantu Anda mengelola tugas, jadwal, catatan penting, tujuan hidup, hingga relasi sosial dalam satu platform terintegrasi. Kami percaya bahwa dengan organisasi yang lebih baik, Anda dapat mencapai potensi penuh Anda.</p>
+                <p>Yang membedakan SmartLife Manager adalah dedikasi kami pada fondasi ilmu komputer. Di balik antarmuka yang intuitif, kami menerapkan berbagai **struktur data** fundamental seperti Antrean (Queue), Tumpukan (Stack), Pohon (Tree), Graf (Graph), dan Heap. Tujuannya bukan hanya untuk efisiensi teknis, tetapi juga untuk memberikan Anda wawasan edukatif tentang bagaimana data Anda diorganisir dan diproses, menjadikan teknologi lebih transparan dan mudah dipahami.</p>
             </section>
 
             <section class="mb-5">
-                <h3 class="section-title"><i class="fas fa-bullseye me-2"></i>Tujuan Pengembangan Aplikasi</h3>
+                <h3 class="section-title"><i class="fas fa-bullseye me-2"></i>Misi dan Tujuan Kami</h3>
                 <ul class="list-styled">
-                    <li><strong>Meningkatkan Produktivitas Pribadi:</strong> Menyediakan alat yang intuitif dan efektif untuk membantu pengguna fokus pada hal yang paling penting dan mencapai target mereka dengan lebih sedikit usaha.</li>
-                    <li><strong>Mengorganisir Informasi Secara Terpusat:</strong> Menjadi satu tempat untuk semua kebutuhan organisasi Anda, mengurangi fragmentasi data dan kebingungan akibat penggunaan banyak aplikasi berbeda.</li>
-                    <li><strong>Menyediakan Pengalaman Belajar Interaktif:</strong> Secara transparan (namun tidak mengganggu) menunjukkan bagaimana konsep abstrak seperti Antrean (Queue), Tumpukan (Stack), Pohon (Tree), Graf (Graph), dan lainnya diterapkan untuk memecahkan masalah nyata dalam pengelolaan data sehari-hari.</li>
-                    <li><strong>Mendorong Pengambilan Keputusan Strategis:</strong> Dengan fitur prioritisasi dan visualisasi data (di masa depan), membantu pengguna membuat keputusan yang lebih baik terkait alokasi waktu dan sumber daya.</li>
-                    <li><strong>Memberdayakan Pengguna:</strong> Memberikan kontrol penuh kepada pengguna atas data dan alur kerja produktivitas mereka.</li>
+                    <li><strong>Meningkatkan Produktivitas Holistik:</strong> Kami bertujuan menyediakan alat yang tidak hanya membantu Anda menyelesaikan lebih banyak tugas, tetapi juga meningkatkan kualitas fokus, mengurangi penundaan, dan membantu Anda mencapai keseimbangan hidup yang lebih baik.</li>
+                    <li><strong>Menyederhanakan Kompleksitas Hidup:</strong> Dengan mengintegrasikan berbagai alat organisasi ke dalam satu platform, kami ingin mengurangi kerumitan penggunaan banyak aplikasi berbeda, sehingga Anda bisa lebih fokus pada apa yang benar-benar penting.</li>
+                    <li><strong>Memberikan Wawasan Edukatif Praktis:</strong> Kami berkomitmen untuk menunjukkan aplikasi nyata dari konsep ilmu komputer. SmartLife Manager adalah laboratorium hidup di mana Anda bisa melihat bagaimana teori struktur data diimplementasikan untuk memberikan manfaat nyata dalam pengelolaan informasi.</li>
+                    <li><strong>Mendorong Pertumbuhan Pribadi:</strong> Melalui fitur penetapan tujuan dan pelacakan progres, kami ingin memberdayakan Anda untuk terus berkembang, mempelajari hal baru, dan mencapai aspirasi jangka panjang Anda.</li>
+                    <li><strong>Membangun Komunitas Terorganisir:</strong> Di masa depan, kami bercita-cita untuk menambahkan fitur kolaborasi yang memungkinkan pengguna berbagi dan bekerja sama dalam mencapai tujuan bersama, tentunya dengan tetap menjaga privasi dan keamanan data.</li>
                 </ul>
             </section>
 
             <section class="mb-5">
-                <h3 class="section-title"><i class="fas fa-users me-2"></i>Dampak Positif bagi Pengguna</h3>
+                <h3 class="section-title"><i class="fas fa-users me-2"></i>Manfaat Luar Biasa untuk Anda</h3>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="impact-item">
                             <i class="fas fa-chart-line fa-2x text-impact mb-2"></i>
-                            <h5>Peningkatan Efisiensi & Fokus</h5>
-                            <p>Alur kerja yang lebih lancar dan pengurangan waktu terbuang untuk mencari informasi atau mengingat tugas.</p>
+                            <h5>Efisiensi Meroket, Fokus Meningkat</h5>
+                            <p>Dengan alur kerja yang terstruktur dan informasi yang mudah diakses, Anda akan menyelesaikan lebih banyak hal dengan usaha yang lebih sedikit, membebaskan waktu untuk hal-hal yang Anda cintai.</p>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="impact-item">
-                            <i class="fas fa-smile-beam fa-2x text-impact mb-2"></i>
-                            <h5>Pengurangan Stres & Beban Mental</h5>
-                            <p>Sistem yang terorganisir membantu mengurangi beban mental untuk mengingat semua detail, sehingga lebih tenang.</p>
+                             <i class="fas fa-smile-beam fa-2x text-impact mb-2"></i>
+                            <h5>Hidup Lebih Tenang, Stres Berkurang</h5>
+                            <p>Biarkan SmartLife Manager mengingat semua detail untuk Anda. Dengan sistem yang andal, beban mental berkurang, membawa ketenangan dalam rutinitas harian Anda.</p>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="impact-item">
                             <i class="fas fa-lightbulb fa-2x text-impact mb-2"></i>
-                            <h5>Pemahaman Konsep Teknologi</h5>
-                            <p>Mendapatkan wawasan praktis tentang cara kerja struktur data, mengubah teori menjadi aplikasi nyata.</p>
+                            <h5>Belajar Sambil Menggunakan</h5>
+                            <p>Dapatkan pemahaman intuitif tentang bagaimana teknologi bekerja. Kami menjelaskan konsep struktur data dengan cara yang mudah dicerna, relevan dengan fitur yang Anda gunakan.</p>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="impact-item">
                             <i class="fas fa-cogs fa-2x text-impact mb-2"></i>
-                            <h5>Keteraturan & Kontrol Lebih Baik</h5>
-                            <p>Membantu membentuk kebiasaan teratur dan memberikan kendali lebih besar atas aspek kehidupan digital Anda.</p>
+                            <h5>Kontrol Penuh di Tangan Anda</h5>
+                            <p>Ambil alih kendali atas jadwal, tugas, dan tujuan Anda. SmartLife Manager dirancang untuk memberdayakan Anda, bukan sebaliknya.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="mb-5">
-                <h3 class="section-title"><i class="fas fa-cogs me-2"></i>Fitur Utama & Keterkaitan Struktur Data</h3>
-                <p>Berikut adalah gambaran singkat fitur-fitur yang direncanakan dan bagaimana struktur data berperan:</p>
-                <ul>
-                    <li><strong>Manajemen Tugas:</strong> Menggunakan <strong>Antrean (Queue)</strong> untuk tugas masuk, dan <strong>Heap (Priority Queue)</strong> untuk menampilkan tugas berdasarkan prioritas.</li>
-                    <li><strong>Penjadwalan:</strong> Acara disimpan dan diurutkan (konsep <strong>Sorted List</strong>). Untuk pencarian cepat pada data besar, bisa dioptimalkan dengan <strong>Binary Search Tree (BST)</strong>.</li>
-                    <li><strong>Pencatatan:</strong> Daftar catatan (<strong>List</strong>). Fitur "Undo" atau "Riwayat Akses" dapat memanfaatkan konsep <strong>Tumpukan (Stack)</strong>.</li>
-                    <li><strong>Tujuan & Prioritas:</strong> Tujuan dan sub-tujuan dapat membentuk hierarki (<strong>Tree</strong>). Prioritas tujuan juga bisa dikelola dengan <strong>Heap</strong>.</li>
-                    <li><strong>Relasi Sosial:</strong> Jaringan kontak dan hubungannya secara alami direpresentasikan sebagai <strong>Graf (Graph)</strong>.</li>
-                    <li><strong>Pencarian & Indeks:</strong> Untuk pencarian cepat di berbagai fitur, konsep <strong>Hash Table (Dictionary)</strong> sangat fundamental.</li>
+            <section>
+                <h3 class="section-title"><i class="fas fa-cogs me-2"></i>Intip Dapur SmartLife: Fitur & Struktur Data</h3>
+                <p>Setiap fitur di SmartLife Manager dirancang dengan cermat, memanfaatkan kekuatan struktur data yang tepat untuk kinerja optimal dan pengalaman pengguna terbaik:</p>
+                 <ul>
+                    <li><strong>Manajemen Tugas Fleksibel:</strong> Tugas baru Anda masuk ke dalam <strong>Antrean (Queue)</strong>, memastikan tidak ada yang terlewat. Untuk tugas-tugas penting, kami menggunakan mekanisme prioritisasi yang terinspirasi dari <strong>Heap (Priority Queue)</strong> sehingga Anda selalu tahu apa yang harus dikerjakan selanjutnya. Pengkategorian tugas dengan tag memanfaatkan efisiensi <strong>Set</strong> untuk keunikan dan <strong>Dictionary</strong> untuk pencarian.</li>
+                    <li><strong>Penjadwalan Akurat:</strong> Jadwal harian Anda ditampilkan sebagai <strong>Daftar Terurut (Sorted List)</strong>. Untuk pencarian acara di rentang tanggal yang luas atau penjadwalan acara berulang, konsep <strong>Pohon Pencarian Biner (Binary Search Tree)</strong> atau indeks database yang setara memastikan kecepatan dan efisiensi.</li>
+                    <li><strong>Pencatatan Dinamis & Terstruktur:</strong> Semua catatan Anda disimpan dan dapat diakses dengan mudah (mirip <strong>List</strong>). Untuk fitur seperti "Undo/Redo" dalam editor atau riwayat akses catatan, kami mengimplementasikan konsep <strong>Tumpukan (Stack)</strong>.</li>
+                    <li><strong>Perencanaan Tujuan & Prioritas Strategis:</strong> Tujuan besar Anda dapat dipecah menjadi sub-tujuan atau tugas-tugas kecil, membentuk struktur hierarkis seperti <strong>Pohon (Tree)</strong>. Prioritas antar tujuan atau dalam satu tujuan bisa dikelola dengan efisien menggunakan prinsip <strong>Heap</strong>.</li>
+                    <li><strong>Manajemen Relasi Sosial Bermakna:</strong> Jaringan kontak Anda dan bagaimana mereka saling terhubung secara alami direpresentasikan dan dianalisis menggunakan struktur data <strong>Graf (Graph)</strong>, memungkinkan Anda memahami dan memelihara relasi dengan lebih baik.</li>
+                    <li><strong>Dasar Semua Fitur: Pencarian Cepat & Pengindeksan:</strong> Di balik banyak fitur, kami menggunakan prinsip <strong>Tabel Hash (Dictionary)</strong> untuk pengindeksan dan pencarian data yang sangat cepat, memastikan aplikasi tetap responsif meskipun data Anda bertambah banyak.</li>
                 </ul>
-                <p>Dengan SmartLife Manager, kami berharap Anda tidak hanya menjadi lebih produktif, tetapi juga terinspirasi oleh kekuatan dan keindahan di balik teknologi yang Anda gunakan setiap hari.</p>
+                <p>Dengan SmartLife Manager, Anda tidak hanya mendapatkan alat bantu. Anda mendapatkan partner cerdas yang membantu Anda memahami dunia di balik layar produktivitas Anda. Selamat menjelajah dan menjadi lebih terstruktur!</p>
             </section>
         </div>
+
+        <section class="team-section">
+            <div class="container">
+                <h3 class="section-title"><i class="fas fa-users-cog me-2"></i>Tim Pengembang SmartLife Manager</h3>
+                <div class="row justify-content-center mt-4">
+                    {% if team_members_with_roles %}
+                        {% for member in team_members_with_roles %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="team-member-card">
+                                <div class="profile-icon-wrapper">
+                                    <i class="{{ member.icon|default:'fas fa-user-tie' }}"></i>
+                                </div>
+                                <div class="mt-2">
+                                    <h5 class="member-name">{{ member.name }}</h5>
+                                    <p class="member-role">{{ member.role }}</p>
+                                    {% if member.contribution %}
+                                    <p class="member-contribution">{{ member.contribution }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-white-50">Informasi tim akan segera hadir!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

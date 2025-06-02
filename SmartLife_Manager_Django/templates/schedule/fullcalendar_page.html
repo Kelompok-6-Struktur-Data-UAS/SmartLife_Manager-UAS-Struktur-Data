@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default:"Kalender Saya" }} - SmartLife Manager</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+
+    <link rel="stylesheet" href="{% static 'css/main_theme_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/schedule_styles.css' %}">
+
+    <style>
+        /* Override atau tambahan style untuk FullCalendar jika perlu */
+        #calendar {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        /* Tombol FullCalendar agar serasi dengan Bootstrap */
+        .fc-button-primary {
+            background-color: #667eea !important;
+            border-color: #667eea !important;
+        }
+        .fc-button-primary:hover {
+            background-color: #5a6fd0 !important;
+            border-color: #5a6fd0 !important;
+        }
+        .fc-event { /* Styling dasar event di kalender */
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 app-feature-navbar navbar-themed-main">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="fas fa-calendar-alt me-2"></i>SmartLife - Kalender
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavScheduleFC" aria-controls="navbarNavScheduleFC" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavScheduleFC">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'tasks:task_queue' %}">Tugas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'notes:note_list' %}">Catatan</a></li>
+                        <li class="nav-item">
+                            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container feature-page-container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="fas fa-calendar-alt me-2"></i>{{ title }}</h2>
+            <a href="{% url 'schedule:event_create' %}" class="btn btn-main-action"><i class="fas fa-plus-circle"></i> Tambah Acara Baru</a>
+        </div>
+
+        {% include "partials/_messages.html" %}
+
+        {% if struktur_data_info %}
+        <div class="alert alert-info small page-description" role="alert">
+            <i class="fas fa-info-circle"></i> {{ struktur_data_info }}
+        </div>
+        {% endif %}
+        <hr class="mb-4 divider">
+
+        <div id='calendar'></div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js'></script> <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // Tampilan awal: bulan
+                locale: 'id', // Menggunakan bahasa Indonesia (jika locales-all.min.js dimuat)
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' // Pilihan tampilan
+                },
+                events: "{% url 'schedule:all_events_json' %}", // URL untuk mengambil data acara
+                editable: true, // Jika ingin acara bisa di-drag & drop (membutuhkan backend update)
+                selectable: true, // Jika ingin bisa memilih tanggal/rentang untuk membuat acara baru
+
+                eventClick: function(info) {
+                    // Aksi saat acara diklik
+                    alert('Acara: ' + info.event.title + '\\n' +
+                          'Deskripsi: ' + (info.event.extendedProps.description || '-') + '\\n' +
+                          'Lokasi: ' + (info.event.extendedProps.location || '-'));
+                    // Anda bisa mengganti alert ini dengan modal Bootstrap yang menampilkan detail
+                    // atau mengarahkan ke halaman detail acara Django
+                    // window.location.href = info.event.url; // Jika Anda set 'url' di data JSON acara
+                    info.jsEvent.preventDefault(); // mencegah browser mengikuti link href jika ada
+                },
+                // select: function(info) {
+                //     // Aksi saat rentang tanggal dipilih (untuk membuat acara baru)
+                //     var title = prompt('Judul Acara:');
+                //     if (title) {
+                //         // Di sini Anda perlu mengirim data ke backend untuk menyimpan acara baru (misalnya via AJAX)
+                //         // atau redirect ke halaman form tambah acara dengan tanggal yang sudah terisi
+                //         alert('Acara baru akan dibuat: ' + title + ' dari ' + info.startStr + ' sampai ' + info.endStr);
+                //         // calendar.addEvent({ title: title, start: info.start, end: info.end, allDay: info.allDay });
+                //     }
+                //     calendar.unselect();
+                // },
+                // eventDrop: function(info) {
+                //     // Aksi saat acara di-drag & drop (update tanggal di backend via AJAX)
+                //     alert(info.event.title + " dipindahkan ke " + info.event.start.toISOString());
+                //     if (!confirm("Apakah Anda yakin dengan perubahan ini?")) {
+                //         info.revert();
+                //     } else {
+                //         // Kirim perubahan ke backend
+                //     }
+                // }
+            });
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

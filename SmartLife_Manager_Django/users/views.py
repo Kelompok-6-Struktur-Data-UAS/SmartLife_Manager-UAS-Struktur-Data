@@ -1,16 +1,24 @@
-# SmartLife_Manager_Django/users/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from datetime import datetime, timezone, time, date as date_obj  # Pastikan date diimpor sebagai date_obj
+from datetime import datetime, timezone, time, date as date_obj
 
+# --- IMPORT MODEL DARI APLIKASI LAIN & HELPER UNTUK TASKS ---
+# (Uncomment dan sesuaikan dengan nama model dan aplikasi Anda)
+from tasks.views import get_task_queue_from_session # Untuk mengambil data tugas dari sesi
+from schedule.models import Event  # Asumsi model Anda bernama Event di app schedule
+from notes.models import Note      # Asumsi model Anda bernama Note di app notes
+from goals.models import Goal      # Asumsi model Anda bernama Goal di app goals
+from contacts.models import Contact  # Asumsi model Anda bernama Contact di app contacts
+# --------------------------------------------------------------------
 
-# Komentar untuk User model bisa dihapus jika sudah jelas
-# from django.contrib.auth.models import User
+# ... (fungsi register_view, login_view, logout_view, admin_choice_view Anda tetap sama) ...
+# Pastikan fungsi-fungsi tersebut ada di sini jika belum disalin dari contoh sebelumnya.
 
 def register_view(request):
+    # ... (kode register_view Anda yang sudah ada) ...
     print(f"DEBUG (register_view): Method: {request.method}, User Auth: {request.user.is_authenticated}")
     if request.user.is_authenticated:
         if request.user.is_staff:
@@ -31,17 +39,15 @@ def register_view(request):
             return redirect('users:login')
         else:
             print(f"DEBUG (register_view): Form is NOT valid. Errors: {form.errors.as_json()}")
-            # Menampilkan error ke pengguna melalui messages framework
-            for field, errors in form.errors.items():
-                for error in errors:
-                    # Menggunakan field.label jika ada, atau nama field jika tidak ada label eksplisit
-                    field_label = form.fields[field].label if form.fields[field].label else field.replace('_',
-                                                                                                          ' ').capitalize()
-                    if field == '__all__':  # Error non-field
+            for field, errors_list in form.errors.items(): # Menggunakan items() untuk iterasi yang benar
+                for error in errors_list:
+                    field_object = form.fields.get(field) # Dapatkan objek field untuk akses label
+                    field_label = field_object.label if field_object and field_object.label else field.replace('_',' ').capitalize()
+                    if field == '__all__':
                         messages.error(request, error)
                     else:
                         messages.error(request, f"{field_label}: {error}")
-    else:  # GET request
+    else: # GET request
         print("DEBUG (register_view): Processing GET request")
         form = CustomUserCreationForm()
 
@@ -71,8 +77,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                print(
-                    f"DEBUG (login_view): Auth SUCCESS for '{user.username}'. Staff: {user.is_staff}. Auth after login: {request.user.is_authenticated}")
+                print(f"DEBUG (login_view): Auth SUCCESS for '{user.username}'. Staff: {user.is_staff}. Auth after login: {request.user.is_authenticated}")
                 messages.info(request, f'Selamat datang kembali, {username}!')
                 if user.is_staff:
                     print("DEBUG (login_view): Redirecting to admin_choice")
@@ -85,15 +90,15 @@ def login_view(request):
                 messages.error(request, 'Username atau password salah, atau akun Anda tidak aktif.')
         else:
             print(f"DEBUG (login_view): Form login NOT VALID. Errors: {form.errors.as_json()}")
-            for field, errors in form.errors.items():
-                for error in errors:
-                    field_label = form.fields[field].label if form.fields[field].label else field.replace('_',
-                                                                                                          ' ').capitalize()
+            for field, errors_list in form.errors.items():
+                for error in errors_list:
+                    field_object = form.fields.get(field)
+                    field_label = field_object.label if field_object and field_object.label else field.replace('_',' ').capitalize()
                     if field == '__all__':
                         messages.error(request, error)
                     else:
                         messages.error(request, f"{field_label}: {error}")
-    else:  # GET request
+    else: # GET request
         print("DEBUG (login_view): Processing GET request")
         form = CustomAuthenticationForm()
 
@@ -107,70 +112,89 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'Anda telah berhasil logout.')
     print("DEBUG (logout_view): Redirecting to home")
-    return redirect('home')  # Pastikan URL 'home' ada
+    return redirect('home')
 
 
 @login_required
 def user_dashboard_view(request):
     print(f"DEBUG (user_dashboard_view): Accessed by {request.user.username}. Auth: {request.user.is_authenticated}")
+    current_user = request.user
+    today = date_obj.today() # date_obj dari import datetime
 
-    # CONTOH DATA DINAMIS (nantinya akan diambil dari model/database)
-    # Data ini akan digunakan oleh template dashboard.html Anda
-    # Pastikan key di sini sesuai dengan yang Anda gunakan di template.
-
-    # 1. Data Tugas Prioritas (Contoh, nantinya dari model Task atau logika sesi Tasks)
+    # 1. Data Tugas (dari sesi)
+    task_queue_deque = get_task_queue_from_session(request.session)
+    # Format untuk template dashboard (ambil beberapa contoh)
     priority_tasks_data = [
-        {'name': 'Presentasi Proyek Akhir', 'due_date': datetime(2025, 6, 1, tzinfo=timezone.utc),
-         'priority_level': 'high', 'data_structure_used': 'Heap'},
-        {'name': 'Refactor Kode Modul X', 'due_date': datetime(2025, 6, 3, tzinfo=timezone.utc),
-         'priority_level': 'high', 'data_structure_used': 'Priority Queue'},
+        {'name': task_desc, 'due_date': None, 'priority_level': 'medium', 'data_structure_used': 'Queue'}
+        for task_desc in list(task_queue_deque)[:3] # Ambil 3 tugas pertama
     ]
 
-    # 2. Data Jadwal Hari Ini (Contoh, nantinya dari model Event di Schedule)
+    # 2. Data Jadwal Hari Ini (Dari model Event)
     try:
+        today_schedule_queryset = Event.objects.filter(user=current_user, event_date=today).order_by('event_time')
         today_schedule_data = [
-            {'time': time(9, 0), 'title': 'Daily Standup', 'location': 'Online', 'data_structure_used': 'Sorted List'},
-            {'time': time(14, 30), 'title': 'Diskusi Klien', 'location': 'Ruang Rapat B', 'data_structure_used': 'BST'},
+            {'time': event.event_time, 'title': event.title, 'location': event.location, 'data_structure_used': 'Sorted List/DB'}
+            for event in today_schedule_queryset
         ]
-    except ValueError as e:
-        print(f"DEBUG: Error parsing time for today_schedule_data: {e}")
+    except Exception as e:
+        print(f"Error mengambil data jadwal dari DB: {e}")
         today_schedule_data = []
 
-    # 3. Data Catatan Terbaru (Contoh, nantinya dari model Note)
-    recent_notes_data = [
-        # Pastikan 'id' ada jika template Anda membutuhkannya untuk {% url 'notes:note_detail' note.id %}
-        {'id': 1, 'title': 'Ide Fitur Social Graph', 'updated_at': datetime(2025, 5, 28, 10, 0, 0, tzinfo=timezone.utc),
-         'snippet': 'Visualisasi jaringan pertemanan...', 'data_structure_used': 'Stack'},
-        {'id': 2, 'title': 'Daftar Bacaan Struktur Data',
-         'updated_at': datetime(2025, 5, 27, 15, 30, 0, tzinfo=timezone.utc), 'snippet': 'Buku referensi algoritma...',
-         'data_structure_used': 'List'},
-    ]
+    # 3. Data Catatan Terbaru (Dari model Note)
+    try:
+        recent_notes_queryset = Note.objects.filter(user=current_user).order_by('-updated_at')[:3] # Ambil 3 terbaru
+        recent_notes_data = []
+        for note_obj in recent_notes_queryset:
+            recent_notes_data.append({
+                'id': note_obj.id, # Penting untuk link detail
+                'title': note_obj.title,
+                'updated_at': note_obj.updated_at, # Ini sudah objek datetime
+                'snippet': note_obj.content, # Anda akan memotongnya di template
+                'data_structure_used': 'List/DB'
+            })
+    except Exception as e:
+        print(f"Error mengambil data catatan dari DB: {e}")
+        recent_notes_data = []
 
-    # 4. Data Pengingat Sosial (Contoh, nantinya dari model Contact)
-    social_reminders_data = [
-        {'event_name': 'Ulang Tahun Budi', 'contact_name': 'Budi', 'detail': 'Hari ini! Kirim ucapan.',
-         'data_structure_used': 'Graph/Dict'},
-    ]
+    # 4. Data Pengingat Sosial (Dari model Contact - Contoh Sederhana)
+    try:
+        # Contoh: ambil kontak yang ulang tahun bulan ini (logika bisa lebih kompleks)
+        # contacts_birthday_this_month = Contact.objects.filter(user=current_user, birthday__month=today.month).order_by('birthday__day')[:2]
+        # social_reminders_data = [
+        #     {'event_name': f"Ulang Tahun {c.name}", 'contact_name': c.name, 'detail': c.birthday.strftime('%d %b'), 'data_structure_used': 'Graph/Dict'}
+        #     for c in contacts_birthday_this_month
+        # ]
+        # Untuk sekarang, kita kosongkan dulu:
+        social_reminders_data = []
+    except Exception as e:
+        print(f"Error mengambil data kontak dari DB: {e}")
+        social_reminders_data = []
 
-    # 5. Data Progress Tujuan (Contoh, nantinya dari model Goal)
-    goals_progress_data = [
-        {'name': 'Menguasai Algoritma Graf', 'progress': 65, 'data_structure_used': 'Tree Hierarchy'},
-    ]
+    # 5. Data Progress Tujuan (Dari model Goal - Contoh Sederhana)
+    try:
+        # goals_queryset = Goal.objects.filter(user=current_user, is_completed=False).order_by('-priority')[:2]
+        # goals_progress_data = [
+        #     {'name': goal.title, 'progress': goal.get_progress_percentage(), 'data_structure_used': 'Tree/DB'}
+        #     for goal in goals_queryset
+        # ]
+        # Untuk sekarang, kita kosongkan dulu:
+        goals_progress_data = []
+    except Exception as e:
+        print(f"Error mengambil data tujuan dari DB: {e}")
+        goals_progress_data = []
 
-    # 6. Data Info Struktur Data Aktif (Statis atau bisa dinamis)
+
+    # 6. Data Info Struktur Data Aktif (Bisa lebih dinamis)
     active_data_structures_info = [
-        {'name': 'Heap', 'usage_description': f"{len(priority_tasks_data)} tugas prioritas.",
-         'icon_class': 'fas fa-fire'},
-        {'name': 'Antrean (Queue)', 'usage_description': "Tugas masuk diproses FIFO.", 'icon_class': 'fas fa-stream'},
-        # Tambahkan info struktur data lain yang relevan
+        {'name': 'Antrean (Queue)', 'usage_description': f"{len(task_queue_deque)} tugas di antrean.", 'icon_class': 'fas fa-stream'},
+        {'name': 'Database (Sorted List/Index)', 'usage_description': f"{len(schedule_events) if 'schedule_events' in locals() else 0} jadwal & {len(recent_notes_data)} catatan.", 'icon_class': 'fas fa-database'},
+        # Tambahkan info lain berdasarkan data yang berhasil diambil
     ]
 
-    # 7. Data Tim Pembuat (Untuk Footer)
-    team_members_data = ["Rizma", "Tim Member 2", "Tim Member 3", "Tim Member 4", "Tim Member 5", "Tim Member 6"]
+    team_members_data = ["Rizma", "Tim Anda", "Anggota 3", "Anggota 4", "Anggota 5", "Anggota 6"]
 
     context = {
         'title': 'Dashboard Utama',
-        # 'nama_pengguna': request.user.username, # 'user' objek sudah otomatis tersedia di template
         'priority_tasks': priority_tasks_data,
         'today_schedule': today_schedule_data,
         'recent_notes': recent_notes_data,
@@ -178,7 +202,7 @@ def user_dashboard_view(request):
         'goals_progress': goals_progress_data,
         'active_data_structures': active_data_structures_info,
         'team_members': team_members_data,
-        'today_date_display': date_obj.today().strftime("%A, %d %B %Y")  # Tambahkan jika belum ada
+        'today_date_display': today.strftime("%A, %d %B %Y")
     }
     return render(request, 'users/dashboard.html', context)
 
@@ -187,9 +211,12 @@ def user_dashboard_view(request):
 def admin_choice_view(request):
     print(f"DEBUG (admin_choice_view): Accessed by {request.user.username}. Staff: {request.user.is_staff}")
     if not request.user.is_staff:
-        messages.error(request, "Anda tidak memiliki akses ke halaman ini.")
-        print("DEBUG (admin_choice_view): Not staff, redirecting to users:dashboard")
-        return redirect('users:dashboard')
+        messages.error(request, "Halaman ini hanya untuk admin. Silakan login dengan akun admin.")
+        print("DEBUG (admin_choice_view): User is not staff, logging out and redirecting to login page")
+        logout(request)  # Logout pengguna saat ini agar form login bersih
+        return redirect('users:login')  # Arahkan ke halaman login
+
+    # Jika pengguna adalah staf/admin, tampilkan halaman pilihan admin
     context = {
         'title': 'Pilihan Admin',
     }

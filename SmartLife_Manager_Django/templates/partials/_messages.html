@@ -1,0 +1,24 @@
+{% if messages %} {# 1. Cek apakah ada pesan yang dikirim dari view Django #}
+<div class="messages-container-fixed"> {# 2. Kontainer untuk semua pesan, bisa di-style dengan CSS #}
+    {% for message in messages %} {# 3. Loop untuk setiap pesan yang ada #}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert"> {# 4. Styling pesan menggunakan kelas Bootstrap berdasarkan tag pesan (success, error, info, warning) #}
+        
+        {# 5. Menambahkan ikon berdasarkan jenis pesan (opsional tapi bagus untuk UI) #}
+        {% if message.tags == 'success' %}
+            <i class="fas fa-check-circle me-2"></i>
+        {% elif message.tags == 'error' or message.tags == 'danger' %}
+            <i class="fas fa-exclamation-triangle me-2"></i>
+        {% elif message.tags == 'warning' %}
+            <i class="fas fa-exclamation-circle me-2"></i>
+        {% else %} {# Default atau untuk 'info' #}
+            <i class="fas fa-info-circle me-2"></i>
+        {% endif %}
+        
+        {{ message }} {# 6. Menampilkan isi pesan itu sendiri #}
+        
+        {# 7. Tombol close dari Bootstrap agar pesan bisa ditutup pengguna #}
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

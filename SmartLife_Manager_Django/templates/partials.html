@@ -1,0 +1,71 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark mb-4 fixed-top navbar-themed-main">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-brain me-2"></i>SmartLife
+            {# Bagian ini bisa dikustomisasi lebih lanjut jika judul perlu dinamis per halaman #}
+            {% if current_page_title %}
+                - {{ current_page_title }}
+            {% elif request.resolver_match.app_name == 'users' and request.resolver_match.url_name == 'user_dashboard_view' %}
+                - Dashboard
+            {% elif request.resolver_match.app_name == 'tasks' %}
+                - Tugas
+            {% elif request.resolver_match.app_name == 'schedule' %}
+                - Jadwal
+            {% elif request.resolver_match.app_name == 'notes' %}
+                - Catatan
+            {% elif request.resolver_match.app_name == 'goals' %}
+                - Tujuan
+            {% elif request.resolver_match.app_name == 'contacts' %}
+                - Relasi
+            {% elif request.resolver_match.app_name == 'profiles' %}
+                - Profil
+            {% elif request.resolver_match.app_name == 'education' %}
+                - Edukasi
+            {% endif %}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavGlobal" aria-controls="navbarNavGlobal" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavGlobal">
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'users' and request.resolver_match.url_name == 'user_dashboard_view' %}active{% endif %}" href="{% url 'users:dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'tasks' %}active{% endif %}" href="{% url 'tasks:task_queue' %}">Tugas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'schedule' %}active{% endif %}" href="{% url 'schedule:schedule_list' %}">Jadwal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'notes' %}active{% endif %}" href="{% url 'notes:note_list' %}">Catatan</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'goals' %}active{% endif %}" href="{% url 'goals:goal_list' %}">Tujuan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'contacts' %}active{% endif %}" href="{% url 'contacts:contact_list' %}">Relasi</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'profiles' %}active{% endif %}" href="{% url 'profiles:profile_view' %}">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'users:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'users:register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
